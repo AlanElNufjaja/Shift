@@ -135,11 +135,11 @@ export default function FarmerChoices({ estrategias, fuente, cargando, error, mo
             <label htmlFor="current-crop-select" className="block text-xs font-bold text-forest">
               Current / Previous Crop
             </label>
-            <select
+<select
               id="current-crop-select"
               value={cultivoActual}
               onChange={(e) => setCultivoActual(e.target.value)}
-              className="mt-1 w-full rounded-lg border border-[#c9decb] bg-white px-3 py-2 text-sm text-forest focus:outline-none focus:ring-2 focus:ring-[#347b50]"
+              className="mt-1 w-full rounded-lg border border-[#c9decb] bg-white px-3 py-2.5 text-sm font-semibold text-forest focus:outline-none focus:ring-2 focus:ring-[#347b50]"
             >
               <option value="Maíz">Corn (Maíz)</option>
               <option value="Trigo">Wheat (Trigo)</option>
@@ -147,7 +147,9 @@ export default function FarmerChoices({ estrategias, fuente, cargando, error, mo
               <option value="Alfalfa">Alfalfa</option>
               <option value="Tomate">Tomato (Tomate)</option>
               <option value="Cártamo">Safflower (Cártamo)</option>
-              <option value="Descanso">Fallow / Bare Soil (Descanso)</option>
+              <option value="Nuez">Nuez (Walnut / Pecan)</option>
+              <option value="Manzana">Manzana (Apple)</option>
+              <option value="Descanso">Resting / Bare Soil (Descanso)</option>
             </select>
           </div>
 
