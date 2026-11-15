@@ -63,6 +63,22 @@ class PredictRequest(FieldPoint):
     materia_organica_local: Optional[float] = Field(default=None, ge=0, le=15)
     cultivo_actual: Optional[str] = None
 
+    @field_validator("prioridad")
+    @classmethod
+    def valid_priority(cls, value: Optional[str]) -> Optional[str]:
+        allowed = {"balanced", "water", "profit", "soil", "erosion"}
+        if value is not None and value not in allowed:
+            raise ValueError(f"Priority must be one of: {', '.join(sorted(allowed))}")
+        return value
+
+    @field_validator("cultivo_actual")
+    @classmethod
+    def valid_crop(cls, value: Optional[str]) -> Optional[str]:
+        allowed = {"Tomate", "Algodón", "Trigo", "Cártamo", "Alfalfa", "Maíz", "Nuez", "Manzana", "Descanso"}
+        if value is not None and value not in allowed:
+            raise ValueError("Unknown current crop.")
+        return value
+
 
 def clean(value):
     if isinstance(value, bool) or not isinstance(value, (int, float)) or not isfinite(value) or value <= MISSING:
