@@ -126,46 +126,119 @@ def obtener_nombre_lugar(lat: float, lon: float):
         return {"nombre_corto": f"Field ({round(lat,2)}, {round(lon,2)})", "ubicacion_completa": f"{lat}, {lon}", "condado": "N/A", "estado": "N/A", "pais": "N/A"}
 
 def obtener_suelo_usda(lat: float, lon: float, respaldo: Optional[dict] = None):
-    """Return SSURGO observations, or an explicitly labelled pilot baseline.
+    """Fetch SSURGO horizon observations at a point and aggregate the upper 30 cm.
 
-    Custom coordinates never inherit a soil profile from an unrelated pilot.
-    Missing SSURGO attributes remain None instead of being silently imputed.
+    SSURGO stores organic matter, available water capacity and K-factor on
+    chorizon, not component. Horizon values are thickness-weighted within
+    each component; component values are then weighted by comppct_r.
     """
     respaldo = respaldo or {}
-    wkt_box = f"POLYGON(({lon-0.01} {lat-0.01}, {lon+0.01} {lat-0.01}, {lon+0.01} {lat+0.01}, {lon-0.01} {lat+0.01}, {lon-0.01} {lat-0.01}))"
+    point_wkt = f"POINT({lon} {lat})"
     query = f"""
-    SELECT TOP 1 m.mukey, m.muname, c.om_r, c.awc_r, c.kffact
-    FROM mapunit m
-    INNER JOIN component c ON m.mukey = c.mukey AND c.majcompflag = 'Yes'
-    INNER JOIN mupolygon p ON m.mukey = p.mukey
-    WHERE p.mupolygongeo.STIntersects(geometry::STGeomFromText('{wkt_box}', 4326)) = 1
+    SELECT TOP 1000
+        m.mukey, m.muname, c.cokey, c.compname, c.comppct_r,
+        h.hzdept_r, h.hzdepb_r, h.om_r, h.awc_r, h.kffact
+    FROM mupolygon p
+    INNER JOIN mapunit m ON m.mukey = p.mukey
+    INNER JOIN component c ON c.mukey = m.mukey
+        AND c.majcompflag = 'Yes'
+    LEFT JOIN chorizon h ON h.cokey = c.cokey
+    WHERE p.mupolygongeo.STIntersects(
+        geometry::STGeomFromText('{point_wkt}', 4326)
+    ) = 1
+    ORDER BY c.comppct_r DESC, h.hzdept_r
     """
+    query_error = None
+
+    def numeric(value):
+        try:
+            number = float(value)
+            return number if math.isfinite(number) else None
+        except (TypeError, ValueError):
+            return None
+
     try:
         response = requests.post(
             "https://sdmdataaccess.sc.egov.usda.gov/Tabular/post.rest",
-            json={"query": query, "format": "JSON"}, timeout=8
+            json={"query": query, "format": "JSON"}, timeout=12
         )
         response.raise_for_status()
         payload = response.json()
-        if payload.get("Table"):
-            row = payload["Table"][0]
-            def numeric(value):
-                try:
-                    number = float(value)
-                    return round(number, 3) if math.isfinite(number) else None
-                except (TypeError, ValueError):
-                    return None
-            return {
-                "mukey": str(row[0]) if row[0] is not None else None,
-                "textura": str(row[1]) if row[1] is not None else "Not reported",
-                "materia_organica_pct": numeric(row[2]),
-                "retencion_agua_awc": numeric(row[3]),
-                "factor_erosion_k": numeric(row[4]),
-                "fuente": "USDA NRCS SSURGO",
-                "cobertura_verificada": all(numeric(v) is not None for v in row[2:5])
-            }
-    except (requests.RequestException, ValueError, TypeError, KeyError, IndexError):
-        pass
+        rows = payload.get("Table") or []
+        if rows:
+            # Build a depth-weighted profile (0-30 cm) for each major
+            # component, then weight those profiles by component percentage.
+            components = {}
+            for row in rows:
+                if len(row) < 10:
+                    continue
+                mukey, muname, cokey = row[0], row[1], row[2]
+                component_pct = numeric(row[4])
+                top = numeric(row[5])
+                bottom = numeric(row[6])
+                if not cokey or component_pct is None or top is None or bottom is None:
+                    continue
+                overlap = max(0.0, min(bottom, 30.0) - max(top, 0.0))
+                if overlap <= 0:
+                    continue
+                profile = components.setdefault(str(cokey), {
+                    "weight": component_pct, "mukey": mukey, "muname": muname,
+                    "properties": {
+                        "materia_organica_pct": [0.0, 0.0],
+                        "retencion_agua_awc": [0.0, 0.0],
+                        "factor_erosion_k": [0.0, 0.0],
+                    }
+                })
+                # Keep the largest reported component share if duplicate
+                # spatial rows happen to include the same component.
+                profile["weight"] = max(profile["weight"], component_pct)
+                for key, value in (
+                    ("materia_organica_pct", numeric(row[7])),
+                    ("retencion_agua_awc", numeric(row[8])),
+                    # SSURGO kffact is a choice/text field. Accept only
+                    # values that are explicitly numeric; never guess codes.
+                    ("factor_erosion_k", numeric(row[9])),
+                ):
+                    if value is not None:
+                        profile["properties"][key][0] += value * overlap
+                        profile["properties"][key][1] += overlap
+
+            totals = {key: [0.0, 0.0] for key in (
+                "materia_organica_pct", "retencion_agua_awc", "factor_erosion_k"
+            )}
+            total_component_weight = 0.0
+            for profile in components.values():
+                component_values = {}
+                for key, (weighted_sum, depth_sum) in profile["properties"].items():
+                    component_values[key] = weighted_sum / depth_sum if depth_sum else None
+                available = [v for v in component_values.values() if v is not None]
+                if not available:
+                    continue
+                weight = profile["weight"]
+                total_component_weight += weight
+                for key, value in component_values.items():
+                    if value is not None:
+                        totals[key][0] += value * weight
+                        totals[key][1] += weight
+
+            if total_component_weight > 0:
+                first = rows[0]
+                values = {
+                    key: round(weighted_sum / weight_sum, 3) if weight_sum else None
+                    for key, (weighted_sum, weight_sum) in totals.items()
+                }
+                return {
+                    "mukey": str(first[0]) if first[0] is not None else None,
+                    "textura": str(first[1]) if first[1] is not None else "Not reported",
+                    **values,
+                    "fuente": "USDA NRCS SSURGO (0-30 cm; horizon- and component-weighted)",
+                    "cobertura_verificada": all(value is not None for value in values.values()),
+                    "error_consulta": None
+                }
+        elif payload.get("error") or payload.get("Message"):
+            query_error = str(payload.get("error") or payload.get("Message"))[:300]
+    except (requests.RequestException, ValueError, TypeError, KeyError, IndexError) as exc:
+        query_error = f"{type(exc).__name__}: {str(exc)[:240]}"
 
     has_baseline = any(respaldo.get(key) is not None for key in (
         "materia_organica_pct", "retencion_agua_awc", "factor_erosion_k"
@@ -177,7 +250,8 @@ def obtener_suelo_usda(lat: float, lon: float, respaldo: Optional[dict] = None):
         "retencion_agua_awc": respaldo.get("retencion_agua_awc"),
         "factor_erosion_k": respaldo.get("factor_erosion_k"),
         "fuente": "Pilot reference baseline (not an in-field measurement)" if has_baseline else "USDA SSURGO unavailable",
-        "cobertura_verificada": False
+        "cobertura_verificada": False,
+        "error_consulta": query_error
     }
 
 def obtener_agua_subterranea_usgs(lat: float, lon: float):
@@ -361,8 +435,12 @@ def ejecutar_modelo_predictivo_coordenadas(
         if suelo.get(key) is None:
             missing_data.append(f"{label} is unavailable.")
 
+    if suelo.get("error_consulta"):
+        missing_data.append(f"USDA Soil Data Access query error: {suelo['error_consulta']}")
+
     data_quality = {
         "pilot_id": None if pid == "custom-coord" else pid,
+        "soil_query_error": suelo.get("error_consulta"),
         "climate_valid_months_2024": {
             "temperature_max": len(temp_valid),
             "topsoil_moisture": len(humedad_valid)
