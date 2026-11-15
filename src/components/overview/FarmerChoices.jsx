@@ -103,7 +103,7 @@ export default function FarmerChoices({ estrategias, fuente, cargando, error, mo
         : `Source: ${FUENTES[fuente] || 'Unverified source'}${ejemplo ? ' FICTIONAL.' : ''}`,
       topCoso
         ? `Top Strategy: ${topCoso.name} (${topCoso.sequence.join(' -> ')})`
-        : (estrategia ? `Highlighted option: ${estrategia.titulo}` : 'There is no clear winner with the current data.'),
+        : (estrategia ? `Highlighted option: ${displayTerm(estrategia.titulo)}` : 'There is no clear winner with the current data.'),
       'For exploration only; does not replace agronomist validation.',
     ].filter(Boolean).join('\n');
     try {
@@ -264,7 +264,7 @@ export default function FarmerChoices({ estrategias, fuente, cargando, error, mo
                 className={`rounded-xl border p-4 ${idx === 0 ? 'border-[#347b50] bg-[#f2f9f1]' : 'border-[#e0e9df] bg-white'}`}
               >
                 <div className="flex flex-wrap items-center justify-between gap-2">
-                  <h4 className="text-base font-extrabold text-forest">{est.name}</h4>
+                  <h4 className="text-base font-extrabold text-forest">{displayTerm(est.name)}</h4>
                   <span className="rounded-lg bg-white px-2.5 py-1 text-xs font-bold text-[#2a7950] shadow-xs">
                     Score: {est.suitability_score} / 100
                   </span>
@@ -304,8 +304,8 @@ export default function FarmerChoices({ estrategias, fuente, cargando, error, mo
                       : 'The rainfall total is unavailable because one or more months in this rotation lack climate data.'}
                   </p>
                 </div>
-                <p className="mt-2 text-sm text-[#516d59]">{est.rationale}</p>
-                <p className="mt-1 text-xs text-[#865e2a]"><strong>Local review needed:</strong> {est.risks}</p>
+                <p className="mt-2 text-sm text-[#516d59]">{displayTerm(est.rationale)}</p>
+                <p className="mt-1 text-xs text-[#865e2a]"><strong>Local review needed:</strong> {displayTerm(est.risks)}</p>
               </div>
             ))}
           </div>
@@ -333,7 +333,7 @@ export default function FarmerChoices({ estrategias, fuente, cargando, error, mo
                 <Diferencia etiqueta="Water use" delta={resultado.agua} unidad="mm/cycle" invertir />
                 <Diferencia etiqueta="Estimated gross revenue" delta={resultado.ingreso} unidad="USD/acre" />
               </div>
-              <p className="mt-4 text-sm leading-relaxed text-[#516d59]">{resultado.recomendacion.descripcion}. This does not include all farm costs or establish a real-world advantage.</p>
+              <p className="mt-4 text-sm leading-relaxed text-[#516d59]">{displayTerm(resultado.recomendacion.descripcion)}. This does not include all farm costs or establish a real-world advantage.</p>
             </>
           ) : (
             <>
