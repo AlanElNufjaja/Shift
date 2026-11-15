@@ -77,12 +77,14 @@ class BackendTests(unittest.TestCase):
         with TestClient(app) as client:
             response = client.post('/api/predict-rotation', json={
                 'lat': 35.5, 'lon': -119.25, 'prioridad': 'erosion',
-                'materia_organica_local': 1.2, 'cultivo_actual': 'Trigo'
+                'materia_organica_local': 1.2, 'cultivo_actual': 'Trigo',
+                'fecha_siembra': '2026-11-20'
             })
         self.assertEqual(response.status_code, 200)
         mock_engine.assert_called_once_with(
             lat=35.5, lon=-119.25, prioridad='erosion',
-            materia_organica_local=1.2, cultivo_actual='Trigo'
+            materia_organica_local=1.2, cultivo_actual='Trigo',
+            fecha_siembra='2026-11-20'
         )
 
     def test_bad_response_rejected(self):
