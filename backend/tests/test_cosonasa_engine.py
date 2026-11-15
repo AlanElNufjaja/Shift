@@ -77,6 +77,9 @@ class RainfallCycleTests(unittest.TestCase):
         self.assertEqual(schedule[1]["lluvia_esperada_mm"], 150.0)
         self.assertEqual(result["rainfall_total_mm"], 280.0)
         self.assertTrue(result["rainfall_schedule_complete"])
+        self.assertEqual(result["water_demand_profile"], ["Muy Baja", "Baja"])
+        self.assertEqual(result["water_demand"], "Mixed")
+        self.assertAlmostEqual(result["rainfall_mm_per_30_days"], 13.0)
 
 
 class DataIntegrityTests(unittest.TestCase):
