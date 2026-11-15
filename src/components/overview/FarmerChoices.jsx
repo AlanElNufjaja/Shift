@@ -20,7 +20,7 @@ const FUENTES = {
   demo: 'Demo scenarios with fictional values.',
   'p2-importado': 'Scenarios imported from P2; not audited.',
   backend: 'Scenarios returned by P2; not audited.',
-  cosonasa: 'CosoNASA Mamdani fuzzy inference system with 25 authored rules; exploratory output based on available NASA POWER and soil data.',
+  cosonasa: 'CosoNASA Mamdani fuzzy inference system with 28 authored rules; exploratory output based on available NASA POWER and soil data.',
 };
 
 function Diferencia({ etiqueta, delta, unidad, invertir = false }) {
@@ -110,7 +110,7 @@ export default function FarmerChoices({ estrategias, fuente, cargando, error, mo
       {/* Selector de prioridad e inputs locales */}
       <div className="rounded-[20px] border border-border-soft bg-white p-4 shadow-sm sm:p-6">
         <h2 className="text-xl font-bold text-forest">What matters most to you?</h2>
-        <p className="mt-1 text-sm text-[#627b69]">Choose your priority and current crop, then run the 25-rule CosoNASA fuzzy model. Recommendations are exploratory, not scientifically validated.</p>
+        <p className="mt-1 text-sm text-[#627b69]">Choose your priority and current crop, then run the 28-rule CosoNASA fuzzy model. Recommendations are exploratory, not scientifically validated.</p>
         <div className="mt-4 grid grid-cols-2 gap-2 sm:grid-cols-4" role="group" aria-label="Farmer priority">
           {METAS.map(({ id, etiqueta, Icono }) => (
             <button
