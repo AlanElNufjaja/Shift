@@ -24,7 +24,7 @@ class MembershipFunctionTests(unittest.TestCase):
         with self.assertRaises(ValueError):
             engine.trimf(0.0, 0.0, 0.0, 1.0)
 
-    def test_rule_table_contains_25_rules_and_score_is_bounded(self):
+    def test_rule_table_contains_28_rules_and_covers_all_discrete_combinations(self):
         import itertools
         self.assertEqual(len(engine.REGLAS_COSONASA_28), 28)
         covered = [
