@@ -252,6 +252,10 @@ export default function FarmerChoices({ estrategias, fuente, cargando, error, mo
           </div>
 
           <h3 className="mt-5 text-lg font-extrabold text-forest">3 Compared Rotation Strategies</h3>
+          <p className="mt-1 text-xs leading-relaxed text-[#607965]">
+            Expected rainfall is estimated separately for each crop cycle. The next crop starts when the previous cycle ends.
+            Water demand is a crop-demand category, not the amount of rain expected.
+          </p>
           <div className="mt-3 space-y-3">
             {prediccionCosoNasa.rotation_strategies.map((est, idx) => (
               <div
@@ -267,17 +271,43 @@ export default function FarmerChoices({ estrategias, fuente, cargando, error, mo
                 <p className="mt-1 text-xs font-bold text-[#37734d]">
                   Sequence: {est.sequence.join(' → ')} · Water demand: {est.water_demand}
                 </p>
-                {est.sequence[0] && prediccionCosoNasa.rainfall_by_crop_cycle?.[est.sequence[0]] && (
-                  <p className="mt-1 text-xs text-[#52765a]">
-                    Estimated rainfall during {est.sequence[0]} cycle: {prediccionCosoNasa.rainfall_by_crop_cycle[est.sequence[0]].lluvia_ciclo_mm ?? 'N/A'} mm
-                    ({prediccionCosoNasa.rainfall_by_crop_cycle[est.sequence[0]].ciclo_dias} days)
+                <div className="mt-3 rounded-lg border border-[#e3ece0] bg-white/80 p-3">
+                  <div className="flex flex-wrap items-center justify-between gap-2">
+                    <p className="text-[10px] font-extrabold uppercase tracking-wider text-[#63816a]">Expected rainfall across this rotation</p>
+                    <strong className="text-sm text-[#285b3d]">
+                      {est.rainfall_total_mm == null ? 'Incomplete data' : `${formatoNumero(est.rainfall_total_mm, 1)} mm total`}
+                    </strong>
+                  </div>
+                  <div className="mt-2 space-y-2">
+                    {(est.rainfall_schedule || []).map((cycle, cycleIndex) => (
+                      <div key={`${est.id}-rain-${cycleIndex}`} className="flex flex-wrap items-center justify-between gap-2 border-t border-[#edf1eb] pt-2 text-xs">
+                        <div>
+                          <strong className="text-[#365d40]">{cycleIndex + 1}. {cycle.cultivo}</strong>
+                          <span className="ml-2 text-[#829286]">{cycle.ciclo_dias} days · {cycle.fecha_inicio} to {cycle.fecha_fin}</span>
+                          <p className="text-[10px] text-[#829286]">Crop water demand: {cycle.demanda_agua}</p>
+                        </div>
+                        <strong className="text-[#285b3d]">
+                          {cycle.lluvia_esperada_mm == null ? 'N/A' : `${formatoNumero(cycle.lluvia_esperada_mm, 1)} mm rain`}
+                        </strong>
+                      </div>
+                    ))}
+                  </div>
+                  <p className="mt-2 text-[10px] leading-relaxed text-[#8a7960]">
+                    {est.rainfall_schedule_complete
+                      ? `Sum of expected precipitation over ${est.rotation_duration_days} consecutive crop-cycle days; it is not effective rainfall or irrigation supply.`
+                      : 'The rainfall total is unavailable because one or more months in this rotation lack climate data.'}
                   </p>
-                )}
+                </div>
                 <p className="mt-2 text-sm text-[#516d59]">{est.rationale}</p>
                 <p className="mt-1 text-xs text-[#865e2a]"><strong>Local review needed:</strong> {est.risks}</p>
               </div>
             ))}
           </div>
+          <p className="mt-2 rounded-lg bg-[#fbf6eb] px-3 py-2 text-[10px] leading-relaxed text-[#806b4b]">
+            Rainfall values use NASA POWER monthly climatological averages from 2015–2024, not a live weather forecast.
+            They estimate total precipitation, not how much water the crop can actually use. Irrigation requirements also depend on
+            evapotranspiration, soil storage, runoff and effective rainfall.
+          </p>
         </div>
       )}
 
