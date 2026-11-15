@@ -388,7 +388,8 @@ def ejecutar_modelo_predictivo_coordenadas(
     lon: float,
     prioridad: str = "balanced",
     materia_organica_local: Optional[float] = None,
-    cultivo_actual: Optional[str] = None
+    cultivo_actual: Optional[str] = None,
+    fecha_siembra: Optional[str] = None
 ):
     lugar = obtener_nombre_lugar(lat, lon)
 
