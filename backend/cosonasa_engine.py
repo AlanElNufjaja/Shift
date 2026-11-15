@@ -334,7 +334,24 @@ def agregar_calendario_lluvia_estrategias(estrategias: list, fecha_inicio: date,
         estrategia["rainfall_schedule"] = calendario
         estrategia["rainfall_total_mm"] = round(total_mm, 1) if completo else None
         estrategia["rainfall_schedule_complete"] = completo
-        estrategia["rotation_duration_days"] = sum(item["ciclo_dias"] for item in calendario)
+        duracion_total = sum(item["ciclo_dias"] for item in calendario)
+        estrategia["rotation_duration_days"] = duracion_total
+        # Never label a rotation "low water" based on a hand-written strategy name.
+        # Derive its profile from the actual crops included in the sequence.
+        demanda_orden = {"Nula": 0, "Muy Baja": 1, "Baja": 2, "Moderada": 3, "Alta": 4, "Muy Alta": 5}
+        demandas = [item["demanda_agua"] for item in calendario if item["ciclo_dias"] > 0]
+        estrategia["water_demand_profile"] = demandas
+        estrategia["water_demand"] = (
+            "Mixed" if len(set(demandas)) > 1 else (demandas[0] if demandas else "Nula")
+        )
+        estrategia["highest_crop_water_demand"] = (
+            max(demandas, key=lambda value: demanda_orden.get(value, 3)) if demandas else "Nula"
+        )
+        # Normalize precipitation by duration to make rotations of different lengths comparable.
+        estrategia["rainfall_mm_per_30_days"] = (
+            round(total_mm / duracion_total * 30.0, 1)
+            if completo and duracion_total > 0 else None
+        )
     return estrategias
 
 
@@ -391,7 +408,7 @@ def simular_estrategias_predictivas(cultivo_actual: str, agua_n: float, calor_n:
             "name": "Strategy 2: Water Resilience & Nitrogen Fixation",
             "sequence": [ranking[0]["cultivo"] if len(ranking) > 0 else "Cártamo", "Trigo", "Alfalfa"],
             "suitability_score": score_agua,
-            "water_demand": "Very Low -> Low",
+            "water_demand": "Mixed",
             "rationale": f"Introduces drought-tolerant rotation ({ranking[0]['cultivo'] if len(ranking) > 0 else 'Safflower'}) to cut irrigation pressure and restore soil structure.",
             "risks": "Requires careful water scheduling during establishment."
         },
@@ -400,7 +417,7 @@ def simular_estrategias_predictivas(cultivo_actual: str, agua_n: float, calor_n:
             "name": "Strategy 3: Balanced Commercial Rotation",
             "sequence": ["Trigo", ranking[1]["cultivo"] if len(ranking) > 1 else "Algodón", "Cártamo"],
             "suitability_score": score_econ,
-            "water_demand": "Moderate (Balanced)",
+            "water_demand": "Mixed",
             "rationale": "Alternates low-water grains with high-value cash crops to optimize earnings while preserving moisture.",
             "risks": "Sensitive to seasonal commodity market price shifts."
         }
