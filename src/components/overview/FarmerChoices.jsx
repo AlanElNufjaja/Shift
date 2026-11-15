@@ -43,6 +43,7 @@ export default function FarmerChoices({ estrategias, fuente, cargando, error, mo
   const [copiado, setCopiado] = useState('');
   const [cultivoActual, setCultivoActual] = useState('Maíz');
   const [materiaOrganicaLocal, setMateriaOrganicaLocal] = useState('');
+  const [fechaSiembra, setFechaSiembra] = useState(new Date().toISOString().slice(0, 10));
   const [prediccionCosoNasa, setPrediccionCosoNasa] = useState(null);
   const [ejecutandoMotor, setEjecutandoMotor] = useState(false);
   const [errorMotor, setErrorMotor] = useState('');
@@ -74,6 +75,7 @@ export default function FarmerChoices({ estrategias, fuente, cargando, error, mo
         priority: prioridad,
         localOrganicMatter: materiaOrganicaLocal,
         currentCrop: cultivoActual,
+        plantingDate: fechaSiembra,
       });
       setPrediccionCosoNasa(data);
     } catch (err) {
@@ -130,7 +132,7 @@ export default function FarmerChoices({ estrategias, fuente, cargando, error, mo
           ))}
         </div>
 
-        <div className="mt-5 grid gap-3 rounded-xl border border-[#dfece0] bg-[#f7fbf6] p-4 sm:grid-cols-3 sm:items-end">
+        <div className="mt-5 grid gap-3 rounded-xl border border-[#dfece0] bg-[#f7fbf6] p-4 sm:grid-cols-2 sm:items-end">
           <div>
             <label htmlFor="current-crop-select" className="block text-xs font-bold text-forest">
               Current / Previous Crop
@@ -151,6 +153,19 @@ export default function FarmerChoices({ estrategias, fuente, cargando, error, mo
               <option value="Manzana">Manzana (Apple)</option>
               <option value="Descanso">Resting / Bare Soil (Descanso)</option>
             </select>
+          </div>
+
+          <div>
+            <label htmlFor="planting-date-input" className="block text-xs font-bold text-forest">
+              Planned planting date
+            </label>
+            <input
+              id="planting-date-input"
+              type="date"
+              value={fechaSiembra}
+              onChange={(e) => setFechaSiembra(e.target.value)}
+              className="mt-1 w-full rounded-lg border border-[#c9decb] bg-white px-3 py-2 text-sm text-forest focus:outline-none focus:ring-2 focus:ring-[#347b50]"
+            />
           </div>
 
           <div>
