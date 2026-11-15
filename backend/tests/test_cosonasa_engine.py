@@ -61,6 +61,23 @@ class RainfallCycleTests(unittest.TestCase):
         self.assertLessEqual(engine.factor_lluvia_estacional(10000.0, 100, 1.0), 1.3)
         self.assertGreaterEqual(engine.factor_lluvia_estacional(0.0, 100, 1.0), 0.7)
 
+    def test_strategy_rainfall_schedule_uses_sequential_crop_start_dates(self):
+        start = date(2026, 1, 30)
+        strategies = [{"id": "test", "sequence": ["Cártamo", "Trigo"]}]
+        result = engine.agregar_calendario_lluvia_estrategias(
+            strategies, start, {month: 1.0 for month in range(1, 13)}
+        )[0]
+        schedule = result["rainfall_schedule"]
+        self.assertEqual(schedule[0]["fecha_inicio"], start.isoformat())
+        self.assertEqual(
+            schedule[1]["fecha_inicio"],
+            (start + engine.timedelta(days=130)).isoformat()
+        )
+        self.assertEqual(schedule[0]["lluvia_esperada_mm"], 130.0)
+        self.assertEqual(schedule[1]["lluvia_esperada_mm"], 150.0)
+        self.assertEqual(result["rainfall_total_mm"], 280.0)
+        self.assertTrue(result["rainfall_schedule_complete"])
+
 
 class DataIntegrityTests(unittest.TestCase):
     @patch.object(engine, "obtener_nombre_lugar", return_value={"nombre_corto": "Test field"})
