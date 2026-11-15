@@ -20,7 +20,7 @@ const FUENTES = {
   demo: 'Demo scenarios with fictional values.',
   'p2-importado': 'Scenarios imported from P2; not audited.',
   backend: 'Scenarios returned by P2; not audited.',
-  cosonasa: 'Neuro-Symbolic CosoNASA 25-Rule FIS + Random Forest Surrogate (NASA POWER + USDA SSURGO + USGS NWIS).',
+  cosonasa: 'CosoNASA Mamdani fuzzy inference system with 25 authored rules; exploratory output based on available NASA POWER and soil data.',
 };
 
 function Diferencia({ etiqueta, delta, unidad, invertir = false }) {
@@ -89,8 +89,8 @@ export default function FarmerChoices({ estrategias, fuente, cargando, error, mo
     const texto = [
       `Field Shift · ${parcela.nombre}`,
       `Priority: ${PRIORIDADES[prioridad] || prioridad}`,
-      prediccionCosoNasa
-        ? `CosoNASA Score: ${prediccionCosoNasa.fuzzy_evaluation.suitability_score}/100 (${prediccionCosoNasa.fuzzy_evaluation.category}) · Site Confidence: ${rel?.site_confidence_pct}%`
+      prediccionCosoNasa?.status === 'ok'
+        ? `CosoNASA Score: ${prediccionCosoNasa.fuzzy_evaluation.suitability_score}/100 (${prediccionCosoNasa.fuzzy_evaluation.category}) · Validation: not independently validated`
         : `Source: ${FUENTES[fuente] || 'Unverified source'}${ejemplo ? ' FICTIONAL.' : ''}`,
       topCoso
         ? `Top Strategy: ${topCoso.name} (${topCoso.sequence.join(' -> ')})`
@@ -110,7 +110,7 @@ export default function FarmerChoices({ estrategias, fuente, cargando, error, mo
       {/* Selector de prioridad e inputs locales */}
       <div className="rounded-[20px] border border-border-soft bg-white p-4 shadow-sm sm:p-6">
         <h2 className="text-xl font-bold text-forest">What matters most to you?</h2>
-        <p className="mt-1 text-sm text-[#627b69]">Choose your priority, current crop, and run the 25-rule CosoNASA Neuro-Symbolic model.</p>
+        <p className="mt-1 text-sm text-[#627b69]">Choose your priority and current crop, then run the 25-rule CosoNASA fuzzy model. Recommendations are exploratory, not scientifically validated.</p>
         <div className="mt-4 grid grid-cols-2 gap-2 sm:grid-cols-4" role="group" aria-label="Farmer priority">
           {METAS.map(({ id, etiqueta, Icono }) => (
             <button
@@ -184,7 +184,16 @@ export default function FarmerChoices({ estrategias, fuente, cargando, error, mo
       </div>
 
       {/* Resultados y Métricas de Confiabilidad del Modelo */}
-      {prediccionCosoNasa && (
+      {prediccionCosoNasa && prediccionCosoNasa.status !== 'ok' ? (
+        <div className="rounded-[22px] border border-[#e5c99b] bg-white p-5 shadow-sm sm:p-7" role="status">
+          <h3 className="text-base font-extrabold text-forest">CosoNASA could not generate a recommendation</h3>
+          <p className="mt-2 text-sm text-[#865e2a]">{prediccionCosoNasa.message}</p>
+          <ul className="mt-3 list-disc space-y-1 pl-5 text-xs text-[#6b6253]">
+            {(prediccionCosoNasa.missing_data || []).map((item) => <li key={item}>{item}</li>)}
+          </ul>
+          <p className="mt-3 text-xs text-[#68806a]">The system will not replace missing observations with invented climate or soil values.</p>
+        </div>
+      ) : prediccionCosoNasa && (
         <div className="rounded-[22px] border border-[#b7d8bc] bg-white p-5 shadow-sm sm:p-7" aria-live="polite">
           <div className="flex flex-wrap items-center justify-between gap-2">
             <p className="text-sm font-bold text-[#2a7950]">
@@ -195,44 +204,29 @@ export default function FarmerChoices({ estrategias, fuente, cargando, error, mo
             </span>
           </div>
 
-          {/* Bloque de Confiabilidad y Validación Científica (total_field.py) */}
           {prediccionCosoNasa.model_reliability && (
             <div className="mt-4 rounded-xl border border-[#cbe2cf] bg-[#eef7ee] p-4">
-              <div className="flex flex-wrap items-center justify-between gap-2">
-                <p className="flex items-center gap-1.5 text-xs font-extrabold uppercase tracking-wide text-[#1e6039]">
-                  <ShieldCheck size={16} className="text-[#2a7950]" />
-                  Model Reliability &amp; Validation Metrics
-                </p>
-                <span className="rounded-md bg-white px-2.5 py-0.5 text-xs font-extrabold text-[#2a7950]">
-                  Site Confidence: {prediccionCosoNasa.model_reliability.site_confidence_pct}% (±{prediccionCosoNasa.model_reliability.margin_of_error_pts} pts)
-                </span>
-              </div>
-              <p className="mt-1 text-xs text-[#37734d]">
-                <strong>Data Coverage Level:</strong> {prediccionCosoNasa.model_reliability.confidence_level}
+              <p className="flex items-center gap-1.5 text-xs font-extrabold uppercase tracking-wide text-[#1e6039]">
+                <ShieldCheck size={16} className="text-[#2a7950]" />
+                Model transparency
               </p>
-              <div className="mt-3 grid grid-cols-2 gap-2 text-xs sm:grid-cols-4">
-                <div className="rounded-lg bg-white p-2.5">
-                  <span className="block text-[11px] text-[#68806a]">Benchmark Precision</span>
-                  <strong className="text-sm font-extrabold text-forest">{prediccionCosoNasa.model_reliability.benchmark_precision_pct}%</strong>
-                </div>
-                <div className="rounded-lg bg-white p-2.5">
-                  <span className="block text-[11px] text-[#68806a]">R² Test Fit</span>
-                  <strong className="text-sm font-extrabold text-forest">{prediccionCosoNasa.model_reliability.r2_score_test}</strong>
-                </div>
-                <div className="rounded-lg bg-white p-2.5">
-                  <span className="block text-[11px] text-[#68806a]">MAPE Error</span>
-                  <strong className="text-sm font-extrabold text-forest">{prediccionCosoNasa.model_reliability.mape_error_pct}%</strong>
-                </div>
-                <div className="rounded-lg bg-white p-2.5">
-                  <span className="block text-[11px] text-[#68806a]">Rule Coverage</span>
-                  <strong className="text-sm font-extrabold text-forest">81 / 81 (100%)</strong>
-                </div>
-              </div>
+              <p className="mt-2 text-xs text-[#37734d]">
+                <strong>Architecture:</strong> {prediccionCosoNasa.model_reliability.architecture}
+              </p>
+              <p className="mt-1 text-xs text-[#865e2a]">
+                <strong>Validation:</strong> {prediccionCosoNasa.model_reliability.validation_status}
+              </p>
+              <p className="mt-1 text-xs text-[#37734d]">
+                <strong>Rule count:</strong> {prediccionCosoNasa.model_reliability.rule_count} (this is not a coverage or accuracy percentage).
+              </p>
+              <p className="mt-1 text-xs text-[#37734d]">
+                <strong>Crop history:</strong> {prediccionCosoNasa.data_quality.crop_history_status}. {prediccionCosoNasa.data_quality.monoculture_input}
+              </p>
             </div>
           )}
 
           <div className="mt-3 grid gap-2 rounded-xl bg-[#f4f9f4] p-3 text-xs text-[#4a6652] sm:grid-cols-2">
-            <p><strong>Soil Source:</strong> {prediccionCosoNasa.soil_properties?.textura} ({prediccionCosoNasa.soil_properties?.materia_organica_pct}% OM · {prediccionCosoNasa.soil_properties?.fuente})</p>
+            <p><strong>Soil Source:</strong> {prediccionCosoNasa.soil_properties?.textura} ({prediccionCosoNasa.soil_properties?.materia_organica_pct ?? 'N/A'}% OM · {prediccionCosoNasa.soil_properties?.fuente})</p>
             <p><strong>Local Groundwater:</strong> {prediccionCosoNasa.local_groundwater_usgs?.estacion_local_usgs}</p>
           </div>
 
