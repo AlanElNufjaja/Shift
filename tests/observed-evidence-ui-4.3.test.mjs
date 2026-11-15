@@ -1,0 +1,31 @@
+import test from 'node:test';
+import assert from 'node:assert/strict';
+import { readFileSync } from 'node:fs';
+import { createFieldReport } from '../src/lib/fieldReport.js';
+import { buildPdf } from '../src/lib/simplePdf.js';
+const read=(p)=>readFileSync(new URL('../'+p,import.meta.url),'utf8');
+test('assessment includes source screening but simulator and P2 stay separate',()=>{
+  const app=read('src/App.jsx');
+  const workbench=read('src/components/data/DataWorkbench.jsx');
+  const farmer=read('src/components/overview/FarmerSituation.jsx');
+  assert.match(workbench,/<ObservedEvidencePanel\s*\/>/);
+  assert.match(workbench,/id="detalle-diagnostico"/);
+  assert.match(workbench,/smap/);
+  assert.match(farmer,/<EvidenceQuickAccess\s*\/>/);
+  assert.match(app,/SoilProvider key=/);
+  assert.match(app,/<StrategyComparison/);
+  assert.match(read('src/lib/observedEvidence.js'),/Results do not change P2 scenarios/);
+});
+test('PDF identifies descriptive NASA screening separately from demo crop options',()=>{
+  const field={id:'fresno-01',nombre:'Fresno',lat:36.6,lon:-120.1};
+  const year=2024;
+  const power={status:'success',parcelaId:field.id,year,key:`${field.lat}:${field.lon}:${year}`,datos:{year,serie:Array.from({length:12},(_,i)=>({periodo:`2024-${String(i+1).padStart(2,'0')}`,temperatura:15+i}))}};
+  const smapNumeric={year,uploaded:{status:'ready',period:{year},location:{lat:field.lat,lon:field.lon},source:{type:'appeears-api',dataset:'SPL4SMGP',unit:'m³/m³'},valid_months:12,months:Array.from({length:12},(_,i)=>({date:`2024-${String(i+1).padStart(2,'0')}`,surface_volumetric:0.4-i*0.01,sample_count:1}))}};
+  const report=createFieldReport({field,priority:'agua',power,smapNumeric});
+  const text=report.sections.flatMap(s=>[s.heading,...s.lines]).join('\n');
+  assert.match(text,/OBSERVATION SCREEN \(DESCRIPTIVE ONLY\)/);
+  assert.match(text,/Matched climate-moisture months: 12\/12/);
+  assert.match(text,/No simulated scenario.*recalculated/);
+  assert.match(text,/Fictional demonstration scenarios/);
+  assert.ok(buildPdf(report).length>1500);
+});

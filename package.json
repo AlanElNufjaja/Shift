@@ -1,0 +1,34 @@
+{
+  "name": "field-shift",
+  "private": true,
+  "version": "4.5.2",
+  "type": "module",
+  "scripts": {
+    "dev": "vite --host 0.0.0.0",
+    "build": "vite build",
+    "preview": "vite preview --host 0.0.0.0",
+    "test": "node --test",
+    "data:validate": "node scripts/validate-parcelas.mjs",
+    "data:inspect": "node scripts/inspect-p1.mjs",
+    "data:multisource": "node scripts/inspect-multisource.mjs",
+    "data:model-audit": "node scripts/audit-team-model.mjs",
+    "model:check": "node scripts/check-model-run.mjs"
+  },
+  "dependencies": {
+    "leaflet": "^1.9.4",
+    "lucide-react": "^0.468.0",
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0",
+    "react-leaflet": "^5.0.0",
+    "recharts": "^3.0.0"
+  },
+  "devDependencies": {
+    "@tailwindcss/vite": "^4.0.0",
+    "@vitejs/plugin-react": "^5.0.0",
+    "tailwindcss": "^4.0.0",
+    "vite": "^7.0.0"
+  },
+  "engines": {
+    "node": ">=20.19.0"
+  }
+}

@@ -1,0 +1,23 @@
+{
+  "fresno-01": {
+    "yearStart": 2015,
+    "yearEnd": 2024,
+    "latestCrop": "Tomate",
+    "source": "team-supplied",
+    "audited": false
+  },
+  "bakersfield-02": {
+    "yearStart": 2015,
+    "yearEnd": 2024,
+    "latestCrop": "Algodón",
+    "source": "team-supplied",
+    "audited": false
+  },
+  "davis-03": {
+    "yearStart": 2015,
+    "yearEnd": 2024,
+    "latestCrop": "Tomate",
+    "source": "team-supplied",
+    "audited": false
+  }
+}

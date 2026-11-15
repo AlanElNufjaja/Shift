@@ -1,0 +1,61 @@
+@import "tailwindcss";
+
+/* Design tokens Field Shift 2.0 / Híbrido AgriTech Premium */
+@theme {
+  --font-sans: "Inter", "Aptos", ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  --color-forest: #153c2b;
+  --color-agri: #347b50;
+  --color-sage: #b9daa8;
+  --color-canvas: #f5f8f3;
+  --color-muted: #718776;
+  --color-border-soft: #e1ebe0;
+}
+
+:root { font-family: var(--font-sans); color-scheme: light; font-synthesis: none; }
+html { scroll-behavior: smooth; scroll-padding-top: 86px; }
+body { margin: 0; min-width: 320px; }
+button, select, summary { -webkit-tap-highlight-color: transparent; }
+button, select { cursor: pointer; }
+button:disabled { cursor: not-allowed; }
+a { text-underline-offset: 3px; }
+
+/* Accesibilidad: el enlace aparece únicamente cuando recibe foco con Tab. */
+.skip-link { position: fixed; z-index: 2000; top: 8px; left: 8px; transform: translateY(-150%); border-radius: 10px; background: #153c2b; color: white; padding: 10px 14px; font-size: 13px; font-weight: 700; }
+.skip-link:focus { transform: translateY(0); }
+.focus-ring:focus-visible, :where(button, a, select, summary):focus-visible { outline: 3px solid #b9daa8; outline-offset: 3px; }
+
+.field-sidebar { background: linear-gradient(164deg, #153c2b 0%, #163927 57%, #102d21 100%); }
+.hero-gradient { background: linear-gradient(112deg, #153c2b 0%, #25563c 70%, #316b47 100%); }
+.panel { border: 1px solid #e1ebe0; background: #fff; border-radius: 18px; box-shadow: 0 4px 20px rgba(19, 58, 35, .035); }
+.eyebrow { color: #6d9676; font-size: 10px; font-weight: 800; letter-spacing: .14em; text-transform: uppercase; }
+.section-title { color: #153c2b; font-size: clamp(18px, 1.7vw, 22px); font-weight: 800; letter-spacing: -.04em; line-height: 1.2; }
+@media (min-width: 1200px) { .map-panel-grid { grid-template-columns: minmax(0, 7fr) minmax(260px, 3fr); } }
+
+/* Leaflet: pines dibujados en HTML estático, sin API key ni iconos externos. */
+.leaflet-container { z-index: 0; background: #dce9d7; font-family: var(--font-sans); }
+.leaflet-control-attribution { font-size: 10px !important; background: rgba(255, 255, 255, .86) !important; }
+.leaflet-control-zoom { border: 1px solid #dfe8dc !important; box-shadow: 0 3px 12px #22492e1c !important; }
+.leaflet-control-zoom a { color: #285f3e !important; border-color: #e8ece7 !important; }
+.field-pin-wrapper { background: transparent; border: 0; }
+.field-pin { display: grid; place-items: center; position: relative; width: 35px; height: 35px; border-radius: 50% 50% 50% 0; transform: rotate(-45deg); background: #65986b; border: 3px solid white; box-shadow: 0 2px 10px #143b2860; transition: background .2s ease, scale .2s ease; }
+.field-pin--active { background: #184f35; scale: 1.13; box-shadow: 0 1px 0 6px #76ae7780, 0 5px 12px #143b2866; }
+.field-pin-dot { width: 10px; height: 10px; border: 2px solid #e0f3dc; border-radius: 50%; transform: rotate(45deg); background: #d5edcd; }
+.leaflet-popup-content-wrapper { border-radius: 13px; box-shadow: 0 9px 25px #173a2429; }
+.leaflet-popup-content { margin: 12px 14px; }
+
+/* <details> permite transparencia científica incluso sin JavaScript adicional. */
+details summary { list-style: none; }
+details summary::-webkit-details-marker { display: none; }
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { scroll-behavior: auto !important; animation-duration: .01ms !important; transition-duration: .01ms !important; }
+}
+
+/* Fase 2: visualización por puntos; el color es una escala visual, no una alerta. */
+.geo-gradient-moisture { background: linear-gradient(90deg, #d8eaf4, #24759d); }
+.geo-gradient-temp { background: linear-gradient(90deg, #f2dfb6, #be5a35); }
+.leaflet-tooltip.field-value-tooltip {
+  border: 1px solid #d7e4d4; background: rgba(255,255,255,.96);
+  border-radius: 8px; color: #214a30; font-family: var(--font-sans);
+  font-size: 11px; font-weight: 800; padding: 5px 8px; box-shadow: 0 3px 12px #16402a20;
+}
+.leaflet-tooltip-top.field-value-tooltip::before { border-top-color: #d7e4d4; }

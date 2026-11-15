@@ -1,0 +1,38 @@
+{
+  "name": "NASA SMAP L4 2024 Fresno surface moisture point sample",
+  "provider": "NASA Earthdata / AppEEARS",
+  "product": "SPL4SMGP.008",
+  "layer": "Geophysical_Data_sm_surface",
+  "output_column": "SPL4SMGP_008_Geophysical_Data_sm_surface",
+  "unit": "m³/m³",
+  "source_data_character": "model-based SMAP L4 volumetric surface soil moisture (0-5 cm), 9 km grid, 3-hourly",
+  "point": {
+    "latitude": 36.7468,
+    "longitude": -119.7726
+  },
+  "year": 2024,
+  "date_start": "2024-01-01",
+  "date_end": "2024-12-31",
+  "observations": 2928,
+  "months_with_observations": 12,
+  "request_id": "26454539-0d77-4a58-9996-fdd3d8b9abaf",
+  "source_csv_filename": "SPL4SMGP-SPL4SMGP-008-results.csv",
+  "public_csv_filename": "smap-fresno-2024.csv",
+  "sha256": "b46acd4c122ab4d995d778fe60692c0225f981b617a4aca897e28656ffda8a23",
+  "citation": "Reichle et al. (2025), SMAP L4 Global 3-hourly 9 km EASE-Grid Surface and Root Zone Soil Moisture Geophysical Data, Version 8; https://doi.org/10.5067/T5RUATAQREF8",
+  "user_supplied_export": true,
+  "app_level_validation": [
+    "checked coordinates",
+    "checked dataset column",
+    "checked 2024 dates",
+    "checked finite values and physical range",
+    "checked 12 monthly groups"
+  ],
+  "not_validated": [
+    "independent NASA authentication of individual values",
+    "SMAP quality flags and soil moisture uncertainty",
+    "parcel-scale ground truth",
+    "crop stress thresholds"
+  ],
+  "usage_limit": "Fresno pilot point in 2024 only. Do not apply to other coordinates, years, soil panels, simulations, or P2 recommendations."
+}

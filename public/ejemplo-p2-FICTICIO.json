@@ -1,0 +1,1470 @@
+{
+  "version": "1.0",
+  "tipo_dato": "demo",
+  "resultados": [
+    {
+      "parcela_id": "fresno-01",
+      "prioridad": "agua",
+      "generacion": {
+        "modelo": "Demo P2: illustrative rules",
+        "version": "demo-0.1",
+        "fecha": "2026-11-14",
+        "insumos": [
+          {
+            "fuente": "NASA POWER",
+            "periodo": "2025",
+            "estado": "FICTIONAL - not queried",
+            "nota": "Test label with no verified link"
+          },
+          {
+            "fuente": "NASA SMAP",
+            "periodo": "2025",
+            "estado": "FICTIONAL - not verified"
+          },
+          {
+            "fuente": "USDA SSURGO",
+            "periodo": "2025",
+            "estado": "FICTIONAL - not verified"
+          },
+          {
+            "fuente": "USDA CropScape",
+            "periodo": "2023-2025",
+            "estado": "FICTIONAL - not verified"
+          },
+          {
+            "fuente": "USDA Market News",
+            "periodo": "2025",
+            "estado": "FICTIONAL - no market prices queried"
+          }
+        ],
+        "supuestos": [
+          "Values are invented solely to test 3-field × 4-priority synchronization.",
+          "No real yields or farm costs were calculated."
+        ],
+        "notas": "No verified link to the data team."
+      },
+      "estrategias": [
+        {
+          "id": "baseline",
+          "titulo": "Continuity / P2 baseline (test)",
+          "subtitulo": "Fictional response for water priority",
+          "cultivos": "Current crop · no additional cover",
+          "agua_mm": 625,
+          "nitrogeno_kg_acre": 4,
+          "ingreso_usd_acre": 1752,
+          "justificacion": "FICTIONAL SAMPLE. Maintains the existing practice. It is the comparison baseline, not an automatic improvement.",
+          "incertidumbre": "Values invented to test the interface; do not use for field decisions. Satellite data and yield indicators are not measurements from this individual field.",
+          "validacion": "Requires validation by P1, P2 and an agronomist. Check irrigation, fertilization, yield and observed rotation records with the grower.",
+          "cobertura_mensual": [
+            "Cubierto",
+            "Cubierto",
+            "Cubierto",
+            "Cubierto",
+            "Cubierto",
+            "Desnudo",
+            "Desnudo",
+            "Desnudo",
+            "Desnudo",
+            "Cubierto",
+            "Cubierto",
+            "Cubierto"
+          ]
+        },
+        {
+          "id": "water",
+          "titulo": "P2 water saving (test)",
+          "subtitulo": "Fictional response for water priority",
+          "cultivos": "Safflower · winter wheat · cover crop",
+          "agua_mm": 394,
+          "nitrogeno_kg_acre": 16,
+          "ingreso_usd_acre": 1655,
+          "justificacion": "FICTIONAL SAMPLE. Explores a lower-water-demand primary crop and cover to limit soil exposure.",
+          "incertidumbre": "Values invented to test the interface; do not use for field decisions. Water balances, yields and planting windows are hypothetical and depend on local soil, irrigation and climate.",
+          "validacion": "Requires validation by P1, P2 and an agronomist. Validate water availability, viable planting dates, salinity, market access and available machinery.",
+          "cobertura_mensual": [
+            "Cubierto",
+            "Cubierto",
+            "Cubierto",
+            "Cubierto",
+            "Cubierto",
+            "Cubierto",
+            "Cubierto",
+            "Cubierto",
+            "Cubierto",
+            "Cubierto",
+            "Cubierto",
+            "Cubierto"
+          ]
+        },
+        {
+          "id": "regen",
+          "titulo": "P2 regenerative (test)",
+          "subtitulo": "Fictional response for water priority",
+          "cultivos": "Chickpea · processing tomato · clover",
+          "agua_mm": 491,
+          "nitrogeno_kg_acre": 40,
+          "ingreso_usd_acre": 2001,
+          "justificacion": "FICTIONAL SAMPLE. Simulates legumes and cover crops to diversify rotations and explore nitrogen contributions.",
+          "incertidumbre": "Values invented to test the interface; do not use for field decisions. Nitrogen fixation and gross revenue are not guaranteed; field trials and actual USDA Market News prices are still needed.",
+          "validacion": "Requires validation by P1, P2 and an agronomist. Measure available nitrogen, organic matter, salinity and compaction; confirm crop contracts and prices.",
+          "cobertura_mensual": [
+            "Cubierto",
+            "Cubierto",
+            "Cubierto",
+            "Cubierto",
+            "Cubierto",
+            "Cubierto",
+            "Cubierto",
+            "Cubierto",
+            "Cubierto",
+            "Cubierto",
+            "Cubierto",
+            "Cubierto"
+          ]
+        }
+      ]
+    },
+    {
+      "parcela_id": "fresno-01",
+      "prioridad": "suelo",
+      "generacion": {
+        "modelo": "Demo P2: illustrative rules",
+        "version": "demo-0.1",
+        "fecha": "2026-11-14",
+        "insumos": [
+          {
+            "fuente": "NASA POWER",
+            "periodo": "2025",
+            "estado": "FICTIONAL - not queried",
+            "nota": "Test label with no verified link"
+          },
+          {
+            "fuente": "NASA SMAP",
+            "periodo": "2025",
+            "estado": "FICTIONAL - not verified"
+          },
+          {
+            "fuente": "USDA SSURGO",
+            "periodo": "2025",
+            "estado": "FICTIONAL - not verified"
+          },
+          {
+            "fuente": "USDA CropScape",
+            "periodo": "2023-2025",
+            "estado": "FICTIONAL - not verified"
+          },
+          {
+            "fuente": "USDA Market News",
+            "periodo": "2025",
+            "estado": "FICTIONAL - no market prices queried"
+          }
+        ],
+        "supuestos": [
+          "Values are invented solely to test 3-field × 4-priority synchronization.",
+          "No real yields or farm costs were calculated."
+        ],
+        "notas": "No verified link to the data team."
+      },
+      "estrategias": [
+        {
+          "id": "baseline",
+          "titulo": "Continuity / P2 baseline (test)",
+          "subtitulo": "Fictional response for soil priority",
+          "cultivos": "Current crop · no additional cover",
+          "agua_mm": 625,
+          "nitrogeno_kg_acre": 4,
+          "ingreso_usd_acre": 1752,
+          "justificacion": "FICTIONAL SAMPLE. Maintains the existing practice. It is the comparison baseline, not an automatic improvement.",
+          "incertidumbre": "Values invented to test the interface; do not use for field decisions. Satellite data and yield indicators are not measurements from this individual field.",
+          "validacion": "Requires validation by P1, P2 and an agronomist. Check irrigation, fertilization, yield and observed rotation records with the grower.",
+          "cobertura_mensual": [
+            "Cubierto",
+            "Cubierto",
+            "Cubierto",
+            "Cubierto",
+            "Cubierto",
+            "Desnudo",
+            "Desnudo",
+            "Desnudo",
+            "Desnudo",
+            "Cubierto",
+            "Cubierto",
+            "Cubierto"
+          ]
+        },
+        {
+          "id": "water",
+          "titulo": "P2 water saving (test)",
+          "subtitulo": "Fictional response for soil priority",
+          "cultivos": "Safflower · winter wheat · cover crop",
+          "agua_mm": 424,
+          "nitrogeno_kg_acre": 22,
+          "ingreso_usd_acre": 1720,
+          "justificacion": "FICTIONAL SAMPLE. Explores a lower-water-demand primary crop and cover to limit soil exposure.",
+          "incertidumbre": "Values invented to test the interface; do not use for field decisions. Water balances, yields and planting windows are hypothetical and depend on local soil, irrigation and climate.",
+          "validacion": "Requires validation by P1, P2 and an agronomist. Validate water availability, viable planting dates, salinity, market access and available machinery.",
+          "cobertura_mensual": [
+            "Cubierto",
+            "Cubierto",
+            "Cubierto",
+            "Cubierto",
+            "Cubierto",
+            "Cubierto",
+            "Cubierto",
+            "Cubierto",
+            "Cubierto",
+            "Cubierto",
+            "Cubierto",
+            "Cubierto"
+          ]
+        },
+        {
+          "id": "regen",
+          "titulo": "P2 regenerative (test)",
+          "subtitulo": "Fictional response for soil priority",
+          "cultivos": "Chickpea · processing tomato · clover",
+          "agua_mm": 527,
+          "nitrogeno_kg_acre": 46,
+          "ingreso_usd_acre": 2080,
+          "justificacion": "FICTIONAL SAMPLE. Simulates legumes and cover crops to diversify rotations and explore nitrogen contributions.",
+          "incertidumbre": "Values invented to test the interface; do not use for field decisions. Nitrogen fixation and gross revenue are not guaranteed; field trials and actual USDA Market News prices are still needed.",
+          "validacion": "Requires validation by P1, P2 and an agronomist. Measure available nitrogen, organic matter, salinity and compaction; confirm crop contracts and prices.",
+          "cobertura_mensual": [
+            "Cubierto",
+            "Cubierto",
+            "Cubierto",
+            "Cubierto",
+            "Cubierto",
+            "Cubierto",
+            "Cubierto",
+            "Cubierto",
+            "Cubierto",
+            "Cubierto",
+            "Cubierto",
+            "Cubierto"
+          ]
+        }
+      ]
+    },
+    {
+      "parcela_id": "fresno-01",
+      "prioridad": "rentabilidad",
+      "generacion": {
+        "modelo": "Demo P2: illustrative rules",
+        "version": "demo-0.1",
+        "fecha": "2026-11-14",
+        "insumos": [
+          {
+            "fuente": "NASA POWER",
+            "periodo": "2025",
+            "estado": "FICTIONAL - not queried",
+            "nota": "Test label with no verified link"
+          },
+          {
+            "fuente": "NASA SMAP",
+            "periodo": "2025",
+            "estado": "FICTIONAL - not verified"
+          },
+          {
+            "fuente": "USDA SSURGO",
+            "periodo": "2025",
+            "estado": "FICTIONAL - not verified"
+          },
+          {
+            "fuente": "USDA CropScape",
+            "periodo": "2023-2025",
+            "estado": "FICTIONAL - not verified"
+          },
+          {
+            "fuente": "USDA Market News",
+            "periodo": "2025",
+            "estado": "FICTIONAL - no market prices queried"
+          }
+        ],
+        "supuestos": [
+          "Values are invented solely to test 3-field × 4-priority synchronization.",
+          "No real yields or farm costs were calculated."
+        ],
+        "notas": "No verified link to the data team."
+      },
+      "estrategias": [
+        {
+          "id": "baseline",
+          "titulo": "Continuity / P2 baseline (test)",
+          "subtitulo": "Fictional response for profitability priority",
+          "cultivos": "Current crop · no additional cover",
+          "agua_mm": 625,
+          "nitrogeno_kg_acre": 4,
+          "ingreso_usd_acre": 1752,
+          "justificacion": "FICTIONAL SAMPLE. Maintains the existing practice. It is the comparison baseline, not an automatic improvement.",
+          "incertidumbre": "Values invented to test the interface; do not use for field decisions. Satellite data and yield indicators are not measurements from this individual field.",
+          "validacion": "Requires validation by P1, P2 and an agronomist. Check irrigation, fertilization, yield and observed rotation records with the grower.",
+          "cobertura_mensual": [
+            "Cubierto",
+            "Cubierto",
+            "Cubierto",
+            "Cubierto",
+            "Cubierto",
+            "Desnudo",
+            "Desnudo",
+            "Desnudo",
+            "Desnudo",
+            "Cubierto",
+            "Cubierto",
+            "Cubierto"
+          ]
+        },
+        {
+          "id": "water",
+          "titulo": "P2 water saving (test)",
+          "subtitulo": "Fictional response for profitability priority",
+          "cultivos": "Safflower · winter wheat · cover crop",
+          "agua_mm": 426,
+          "nitrogeno_kg_acre": 16,
+          "ingreso_usd_acre": 1802,
+          "justificacion": "FICTIONAL SAMPLE. Explores a lower-water-demand primary crop and cover to limit soil exposure.",
+          "incertidumbre": "Values invented to test the interface; do not use for field decisions. Water balances, yields and planting windows are hypothetical and depend on local soil, irrigation and climate.",
+          "validacion": "Requires validation by P1, P2 and an agronomist. Validate water availability, viable planting dates, salinity, market access and available machinery.",
+          "cobertura_mensual": [
+            "Cubierto",
+            "Cubierto",
+            "Cubierto",
+            "Cubierto",
+            "Cubierto",
+            "Cubierto",
+            "Cubierto",
+            "Cubierto",
+            "Cubierto",
+            "Cubierto",
+            "Cubierto",
+            "Cubierto"
+          ]
+        },
+        {
+          "id": "regen",
+          "titulo": "P2 regenerative (test)",
+          "subtitulo": "Fictional response for profitability priority",
+          "cultivos": "Chickpea · processing tomato · clover",
+          "agua_mm": 530,
+          "nitrogeno_kg_acre": 40,
+          "ingreso_usd_acre": 2178,
+          "justificacion": "FICTIONAL SAMPLE. Simulates legumes and cover crops to diversify rotations and explore nitrogen contributions.",
+          "incertidumbre": "Values invented to test the interface; do not use for field decisions. Nitrogen fixation and gross revenue are not guaranteed; field trials and actual USDA Market News prices are still needed.",
+          "validacion": "Requires validation by P1, P2 and an agronomist. Measure available nitrogen, organic matter, salinity and compaction; confirm crop contracts and prices.",
+          "cobertura_mensual": [
+            "Cubierto",
+            "Cubierto",
+            "Cubierto",
+            "Cubierto",
+            "Cubierto",
+            "Cubierto",
+            "Cubierto",
+            "Cubierto",
+            "Cubierto",
+            "Cubierto",
+            "Cubierto",
+            "Cubierto"
+          ]
+        }
+      ]
+    },
+    {
+      "parcela_id": "fresno-01",
+      "prioridad": "erosion",
+      "generacion": {
+        "modelo": "Demo P2: illustrative rules",
+        "version": "demo-0.1",
+        "fecha": "2026-11-14",
+        "insumos": [
+          {
+            "fuente": "NASA POWER",
+            "periodo": "2025",
+            "estado": "FICTIONAL - not queried",
+            "nota": "Test label with no verified link"
+          },
+          {
+            "fuente": "NASA SMAP",
+            "periodo": "2025",
+            "estado": "FICTIONAL - not verified"
+          },
+          {
+            "fuente": "USDA SSURGO",
+            "periodo": "2025",
+            "estado": "FICTIONAL - not verified"
+          },
+          {
+            "fuente": "USDA CropScape",
+            "periodo": "2023-2025",
+            "estado": "FICTIONAL - not verified"
+          },
+          {
+            "fuente": "USDA Market News",
+            "periodo": "2025",
+            "estado": "FICTIONAL - no market prices queried"
+          }
+        ],
+        "supuestos": [
+          "Values are invented solely to test 3-field × 4-priority synchronization.",
+          "No real yields or farm costs were calculated."
+        ],
+        "notas": "No verified link to the data team."
+      },
+      "estrategias": [
+        {
+          "id": "baseline",
+          "titulo": "Continuity / P2 baseline (test)",
+          "subtitulo": "Fictional response for erosion priority",
+          "cultivos": "Current crop · no additional cover",
+          "agua_mm": 625,
+          "nitrogeno_kg_acre": 4,
+          "ingreso_usd_acre": 1752,
+          "justificacion": "FICTIONAL SAMPLE. Maintains the existing practice. It is the comparison baseline, not an automatic improvement.",
+          "incertidumbre": "Values invented to test the interface; do not use for field decisions. Satellite data and yield indicators are not measurements from this individual field.",
+          "validacion": "Requires validation by P1, P2 and an agronomist. Check irrigation, fertilization, yield and observed rotation records with the grower.",
+          "cobertura_mensual": [
+            "Cubierto",
+            "Cubierto",
+            "Cubierto",
+            "Cubierto",
+            "Cubierto",
+            "Desnudo",
+            "Desnudo",
+            "Desnudo",
+            "Desnudo",
+            "Cubierto",
+            "Cubierto",
+            "Cubierto"
+          ]
+        },
+        {
+          "id": "water",
+          "titulo": "P2 water saving (test)",
+          "subtitulo": "Fictional response for erosion priority",
+          "cultivos": "Safflower · winter wheat · cover crop",
+          "agua_mm": 420,
+          "nitrogeno_kg_acre": 16,
+          "ingreso_usd_acre": 1680,
+          "justificacion": "FICTIONAL SAMPLE. Explores a lower-water-demand primary crop and cover to limit soil exposure.",
+          "incertidumbre": "Values invented to test the interface; do not use for field decisions. Water balances, yields and planting windows are hypothetical and depend on local soil, irrigation and climate.",
+          "validacion": "Requires validation by P1, P2 and an agronomist. Validate water availability, viable planting dates, salinity, market access and available machinery.",
+          "cobertura_mensual": [
+            "Cubierto",
+            "Cubierto",
+            "Cubierto",
+            "Cubierto",
+            "Cubierto",
+            "Cubierto",
+            "Cubierto",
+            "Cubierto",
+            "Cubierto",
+            "Cubierto",
+            "Cubierto",
+            "Cubierto"
+          ]
+        },
+        {
+          "id": "regen",
+          "titulo": "P2 regenerative (test)",
+          "subtitulo": "Fictional response for erosion priority",
+          "cultivos": "Chickpea · processing tomato · clover",
+          "agua_mm": 522,
+          "nitrogeno_kg_acre": 40,
+          "ingreso_usd_acre": 2030,
+          "justificacion": "FICTIONAL SAMPLE. Simulates legumes and cover crops to diversify rotations and explore nitrogen contributions.",
+          "incertidumbre": "Values invented to test the interface; do not use for field decisions. Nitrogen fixation and gross revenue are not guaranteed; field trials and actual USDA Market News prices are still needed.",
+          "validacion": "Requires validation by P1, P2 and an agronomist. Measure available nitrogen, organic matter, salinity and compaction; confirm crop contracts and prices.",
+          "cobertura_mensual": [
+            "Cubierto",
+            "Cubierto",
+            "Cubierto",
+            "Cubierto",
+            "Cubierto",
+            "Cubierto",
+            "Cubierto",
+            "Cubierto",
+            "Cubierto",
+            "Cubierto",
+            "Cubierto",
+            "Cubierto"
+          ]
+        }
+      ]
+    },
+    {
+      "parcela_id": "bakersfield-02",
+      "prioridad": "agua",
+      "generacion": {
+        "modelo": "Demo P2: illustrative rules",
+        "version": "demo-0.1",
+        "fecha": "2026-11-14",
+        "insumos": [
+          {
+            "fuente": "NASA POWER",
+            "periodo": "2025",
+            "estado": "FICTIONAL - not queried",
+            "nota": "Test label with no verified link"
+          },
+          {
+            "fuente": "NASA SMAP",
+            "periodo": "2025",
+            "estado": "FICTIONAL - not verified"
+          },
+          {
+            "fuente": "USDA SSURGO",
+            "periodo": "2025",
+            "estado": "FICTIONAL - not verified"
+          },
+          {
+            "fuente": "USDA CropScape",
+            "periodo": "2023-2025",
+            "estado": "FICTIONAL - not verified"
+          },
+          {
+            "fuente": "USDA Market News",
+            "periodo": "2025",
+            "estado": "FICTIONAL - no market prices queried"
+          }
+        ],
+        "supuestos": [
+          "Values are invented solely to test 3-field × 4-priority synchronization.",
+          "No real yields or farm costs were calculated."
+        ],
+        "notas": "No verified link to the data team."
+      },
+      "estrategias": [
+        {
+          "id": "baseline",
+          "titulo": "Continuity / P2 baseline (test)",
+          "subtitulo": "Fictional response for water priority",
+          "cultivos": "Current crop · no additional cover",
+          "agua_mm": 685,
+          "nitrogeno_kg_acre": 4,
+          "ingreso_usd_acre": 1522,
+          "justificacion": "FICTIONAL SAMPLE. Maintains the existing practice. It is the comparison baseline, not an automatic improvement.",
+          "incertidumbre": "Values invented to test the interface; do not use for field decisions. Satellite data and yield indicators are not measurements from this individual field.",
+          "validacion": "Requires validation by P1, P2 and an agronomist. Check irrigation, fertilization, yield and observed rotation records with the grower.",
+          "cobertura_mensual": [
+            "Cubierto",
+            "Cubierto",
+            "Cubierto",
+            "Cubierto",
+            "Desnudo",
+            "Desnudo",
+            "Desnudo",
+            "Desnudo",
+            "Cubierto",
+            "Cubierto",
+            "Cubierto",
+            "Cubierto"
+          ]
+        },
+        {
+          "id": "water",
+          "titulo": "P2 water saving (test)",
+          "subtitulo": "Fictional response for water priority",
+          "cultivos": "Safflower · winter wheat · cover crop",
+          "agua_mm": 422,
+          "nitrogeno_kg_acre": 16,
+          "ingreso_usd_acre": 1439,
+          "justificacion": "FICTIONAL SAMPLE. Explores a lower-water-demand primary crop and cover to limit soil exposure.",
+          "incertidumbre": "Values invented to test the interface; do not use for field decisions. Water balances, yields and planting windows are hypothetical and depend on local soil, irrigation and climate.",
+          "validacion": "Requires validation by P1, P2 and an agronomist. Validate water availability, viable planting dates, salinity, market access and available machinery.",
+          "cobertura_mensual": [
+            "Cubierto",
+            "Cubierto",
+            "Cubierto",
+            "Cubierto",
+            "Cubierto",
+            "Cubierto",
+            "Cubierto",
+            "Cubierto",
+            "Cubierto",
+            "Cubierto",
+            "Cubierto",
+            "Cubierto"
+          ]
+        },
+        {
+          "id": "regen",
+          "titulo": "P2 regenerative (test)",
+          "subtitulo": "Fictional response for water priority",
+          "cultivos": "Chickpea · processing tomato · clover",
+          "agua_mm": 510,
+          "nitrogeno_kg_acre": 40,
+          "ingreso_usd_acre": 1741,
+          "justificacion": "FICTIONAL SAMPLE. Simulates legumes and cover crops to diversify rotations and explore nitrogen contributions.",
+          "incertidumbre": "Values invented to test the interface; do not use for field decisions. Nitrogen fixation and gross revenue are not guaranteed; field trials and actual USDA Market News prices are still needed.",
+          "validacion": "Requires validation by P1, P2 and an agronomist. Measure available nitrogen, organic matter, salinity and compaction; confirm crop contracts and prices.",
+          "cobertura_mensual": [
+            "Cubierto",
+            "Cubierto",
+            "Cubierto",
+            "Cubierto",
+            "Cubierto",
+            "Cubierto",
+            "Cubierto",
+            "Cubierto",
+            "Cubierto",
+            "Cubierto",
+            "Cubierto",
+            "Cubierto"
+          ]
+        }
+      ]
+    },
+    {
+      "parcela_id": "bakersfield-02",
+      "prioridad": "suelo",
+      "generacion": {
+        "modelo": "Demo P2: illustrative rules",
+        "version": "demo-0.1",
+        "fecha": "2026-11-14",
+        "insumos": [
+          {
+            "fuente": "NASA POWER",
+            "periodo": "2025",
+            "estado": "FICTIONAL - not queried",
+            "nota": "Test label with no verified link"
+          },
+          {
+            "fuente": "NASA SMAP",
+            "periodo": "2025",
+            "estado": "FICTIONAL - not verified"
+          },
+          {
+            "fuente": "USDA SSURGO",
+            "periodo": "2025",
+            "estado": "FICTIONAL - not verified"
+          },
+          {
+            "fuente": "USDA CropScape",
+            "periodo": "2023-2025",
+            "estado": "FICTIONAL - not verified"
+          },
+          {
+            "fuente": "USDA Market News",
+            "periodo": "2025",
+            "estado": "FICTIONAL - no market prices queried"
+          }
+        ],
+        "supuestos": [
+          "Values are invented solely to test 3-field × 4-priority synchronization.",
+          "No real yields or farm costs were calculated."
+        ],
+        "notas": "No verified link to the data team."
+      },
+      "estrategias": [
+        {
+          "id": "baseline",
+          "titulo": "Continuity / P2 baseline (test)",
+          "subtitulo": "Fictional response for soil priority",
+          "cultivos": "Current crop · no additional cover",
+          "agua_mm": 685,
+          "nitrogeno_kg_acre": 4,
+          "ingreso_usd_acre": 1522,
+          "justificacion": "FICTIONAL SAMPLE. Maintains the existing practice. It is the comparison baseline, not an automatic improvement.",
+          "incertidumbre": "Values invented to test the interface; do not use for field decisions. Satellite data and yield indicators are not measurements from this individual field.",
+          "validacion": "Requires validation by P1, P2 and an agronomist. Check irrigation, fertilization, yield and observed rotation records with the grower.",
+          "cobertura_mensual": [
+            "Cubierto",
+            "Cubierto",
+            "Cubierto",
+            "Cubierto",
+            "Desnudo",
+            "Desnudo",
+            "Desnudo",
+            "Desnudo",
+            "Cubierto",
+            "Cubierto",
+            "Cubierto",
+            "Cubierto"
+          ]
+        },
+        {
+          "id": "water",
+          "titulo": "P2 water saving (test)",
+          "subtitulo": "Fictional response for soil priority",
+          "cultivos": "Safflower · winter wheat · cover crop",
+          "agua_mm": 455,
+          "nitrogeno_kg_acre": 22,
+          "ingreso_usd_acre": 1496,
+          "justificacion": "FICTIONAL SAMPLE. Explores a lower-water-demand primary crop and cover to limit soil exposure.",
+          "incertidumbre": "Values invented to test the interface; do not use for field decisions. Water balances, yields and planting windows are hypothetical and depend on local soil, irrigation and climate.",
+          "validacion": "Requires validation by P1, P2 and an agronomist. Validate water availability, viable planting dates, salinity, market access and available machinery.",
+          "cobertura_mensual": [
+            "Cubierto",
+            "Cubierto",
+            "Cubierto",
+            "Cubierto",
+            "Cubierto",
+            "Cubierto",
+            "Cubierto",
+            "Cubierto",
+            "Cubierto",
+            "Cubierto",
+            "Cubierto",
+            "Cubierto"
+          ]
+        },
+        {
+          "id": "regen",
+          "titulo": "P2 regenerative (test)",
+          "subtitulo": "Fictional response for soil priority",
+          "cultivos": "Chickpea · processing tomato · clover",
+          "agua_mm": 547,
+          "nitrogeno_kg_acre": 46,
+          "ingreso_usd_acre": 1809,
+          "justificacion": "FICTIONAL SAMPLE. Simulates legumes and cover crops to diversify rotations and explore nitrogen contributions.",
+          "incertidumbre": "Values invented to test the interface; do not use for field decisions. Nitrogen fixation and gross revenue are not guaranteed; field trials and actual USDA Market News prices are still needed.",
+          "validacion": "Requires validation by P1, P2 and an agronomist. Measure available nitrogen, organic matter, salinity and compaction; confirm crop contracts and prices.",
+          "cobertura_mensual": [
+            "Cubierto",
+            "Cubierto",
+            "Cubierto",
+            "Cubierto",
+            "Cubierto",
+            "Cubierto",
+            "Cubierto",
+            "Cubierto",
+            "Cubierto",
+            "Cubierto",
+            "Cubierto",
+            "Cubierto"
+          ]
+        }
+      ]
+    },
+    {
+      "parcela_id": "bakersfield-02",
+      "prioridad": "rentabilidad",
+      "generacion": {
+        "modelo": "Demo P2: illustrative rules",
+        "version": "demo-0.1",
+        "fecha": "2026-11-14",
+        "insumos": [
+          {
+            "fuente": "NASA POWER",
+            "periodo": "2025",
+            "estado": "FICTIONAL - not queried",
+            "nota": "Test label with no verified link"
+          },
+          {
+            "fuente": "NASA SMAP",
+            "periodo": "2025",
+            "estado": "FICTIONAL - not verified"
+          },
+          {
+            "fuente": "USDA SSURGO",
+            "periodo": "2025",
+            "estado": "FICTIONAL - not verified"
+          },
+          {
+            "fuente": "USDA CropScape",
+            "periodo": "2023-2025",
+            "estado": "FICTIONAL - not verified"
+          },
+          {
+            "fuente": "USDA Market News",
+            "periodo": "2025",
+            "estado": "FICTIONAL - no market prices queried"
+          }
+        ],
+        "supuestos": [
+          "Values are invented solely to test 3-field × 4-priority synchronization.",
+          "No real yields or farm costs were calculated."
+        ],
+        "notas": "No verified link to the data team."
+      },
+      "estrategias": [
+        {
+          "id": "baseline",
+          "titulo": "Continuity / P2 baseline (test)",
+          "subtitulo": "Fictional response for profitability priority",
+          "cultivos": "Current crop · no additional cover",
+          "agua_mm": 685,
+          "nitrogeno_kg_acre": 4,
+          "ingreso_usd_acre": 1522,
+          "justificacion": "FICTIONAL SAMPLE. Maintains the existing practice. It is the comparison baseline, not an automatic improvement.",
+          "incertidumbre": "Values invented to test the interface; do not use for field decisions. Satellite data and yield indicators are not measurements from this individual field.",
+          "validacion": "Requires validation by P1, P2 and an agronomist. Check irrigation, fertilization, yield and observed rotation records with the grower.",
+          "cobertura_mensual": [
+            "Cubierto",
+            "Cubierto",
+            "Cubierto",
+            "Cubierto",
+            "Desnudo",
+            "Desnudo",
+            "Desnudo",
+            "Desnudo",
+            "Cubierto",
+            "Cubierto",
+            "Cubierto",
+            "Cubierto"
+          ]
+        },
+        {
+          "id": "water",
+          "titulo": "P2 water saving (test)",
+          "subtitulo": "Fictional response for profitability priority",
+          "cultivos": "Safflower · winter wheat · cover crop",
+          "agua_mm": 457,
+          "nitrogeno_kg_acre": 16,
+          "ingreso_usd_acre": 1567,
+          "justificacion": "FICTIONAL SAMPLE. Explores a lower-water-demand primary crop and cover to limit soil exposure.",
+          "incertidumbre": "Values invented to test the interface; do not use for field decisions. Water balances, yields and planting windows are hypothetical and depend on local soil, irrigation and climate.",
+          "validacion": "Requires validation by P1, P2 and an agronomist. Validate water availability, viable planting dates, salinity, market access and available machinery.",
+          "cobertura_mensual": [
+            "Cubierto",
+            "Cubierto",
+            "Cubierto",
+            "Cubierto",
+            "Cubierto",
+            "Cubierto",
+            "Cubierto",
+            "Cubierto",
+            "Cubierto",
+            "Cubierto",
+            "Cubierto",
+            "Cubierto"
+          ]
+        },
+        {
+          "id": "regen",
+          "titulo": "P2 regenerative (test)",
+          "subtitulo": "Fictional response for profitability priority",
+          "cultivos": "Chickpea · processing tomato · clover",
+          "agua_mm": 550,
+          "nitrogeno_kg_acre": 40,
+          "ingreso_usd_acre": 1895,
+          "justificacion": "FICTIONAL SAMPLE. Simulates legumes and cover crops to diversify rotations and explore nitrogen contributions.",
+          "incertidumbre": "Values invented to test the interface; do not use for field decisions. Nitrogen fixation and gross revenue are not guaranteed; field trials and actual USDA Market News prices are still needed.",
+          "validacion": "Requires validation by P1, P2 and an agronomist. Measure available nitrogen, organic matter, salinity and compaction; confirm crop contracts and prices.",
+          "cobertura_mensual": [
+            "Cubierto",
+            "Cubierto",
+            "Cubierto",
+            "Cubierto",
+            "Cubierto",
+            "Cubierto",
+            "Cubierto",
+            "Cubierto",
+            "Cubierto",
+            "Cubierto",
+            "Cubierto",
+            "Cubierto"
+          ]
+        }
+      ]
+    },
+    {
+      "parcela_id": "bakersfield-02",
+      "prioridad": "erosion",
+      "generacion": {
+        "modelo": "Demo P2: illustrative rules",
+        "version": "demo-0.1",
+        "fecha": "2026-11-14",
+        "insumos": [
+          {
+            "fuente": "NASA POWER",
+            "periodo": "2025",
+            "estado": "FICTIONAL - not queried",
+            "nota": "Test label with no verified link"
+          },
+          {
+            "fuente": "NASA SMAP",
+            "periodo": "2025",
+            "estado": "FICTIONAL - not verified"
+          },
+          {
+            "fuente": "USDA SSURGO",
+            "periodo": "2025",
+            "estado": "FICTIONAL - not verified"
+          },
+          {
+            "fuente": "USDA CropScape",
+            "periodo": "2023-2025",
+            "estado": "FICTIONAL - not verified"
+          },
+          {
+            "fuente": "USDA Market News",
+            "periodo": "2025",
+            "estado": "FICTIONAL - no market prices queried"
+          }
+        ],
+        "supuestos": [
+          "Values are invented solely to test 3-field × 4-priority synchronization.",
+          "No real yields or farm costs were calculated."
+        ],
+        "notas": "No verified link to the data team."
+      },
+      "estrategias": [
+        {
+          "id": "baseline",
+          "titulo": "Continuity / P2 baseline (test)",
+          "subtitulo": "Fictional response for erosion priority",
+          "cultivos": "Current crop · no additional cover",
+          "agua_mm": 685,
+          "nitrogeno_kg_acre": 4,
+          "ingreso_usd_acre": 1522,
+          "justificacion": "FICTIONAL SAMPLE. Maintains the existing practice. It is the comparison baseline, not an automatic improvement.",
+          "incertidumbre": "Values invented to test the interface; do not use for field decisions. Satellite data and yield indicators are not measurements from this individual field.",
+          "validacion": "Requires validation by P1, P2 and an agronomist. Check irrigation, fertilization, yield and observed rotation records with the grower.",
+          "cobertura_mensual": [
+            "Cubierto",
+            "Cubierto",
+            "Cubierto",
+            "Cubierto",
+            "Desnudo",
+            "Desnudo",
+            "Desnudo",
+            "Desnudo",
+            "Cubierto",
+            "Cubierto",
+            "Cubierto",
+            "Cubierto"
+          ]
+        },
+        {
+          "id": "water",
+          "titulo": "P2 water saving (test)",
+          "subtitulo": "Fictional response for erosion priority",
+          "cultivos": "Safflower · winter wheat · cover crop",
+          "agua_mm": 450,
+          "nitrogeno_kg_acre": 16,
+          "ingreso_usd_acre": 1460,
+          "justificacion": "FICTIONAL SAMPLE. Explores a lower-water-demand primary crop and cover to limit soil exposure.",
+          "incertidumbre": "Values invented to test the interface; do not use for field decisions. Water balances, yields and planting windows are hypothetical and depend on local soil, irrigation and climate.",
+          "validacion": "Requires validation by P1, P2 and an agronomist. Validate water availability, viable planting dates, salinity, market access and available machinery.",
+          "cobertura_mensual": [
+            "Cubierto",
+            "Cubierto",
+            "Cubierto",
+            "Cubierto",
+            "Cubierto",
+            "Cubierto",
+            "Cubierto",
+            "Cubierto",
+            "Cubierto",
+            "Cubierto",
+            "Cubierto",
+            "Cubierto"
+          ]
+        },
+        {
+          "id": "regen",
+          "titulo": "P2 regenerative (test)",
+          "subtitulo": "Fictional response for erosion priority",
+          "cultivos": "Chickpea · processing tomato · clover",
+          "agua_mm": 542,
+          "nitrogeno_kg_acre": 40,
+          "ingreso_usd_acre": 1767,
+          "justificacion": "FICTIONAL SAMPLE. Simulates legumes and cover crops to diversify rotations and explore nitrogen contributions.",
+          "incertidumbre": "Values invented to test the interface; do not use for field decisions. Nitrogen fixation and gross revenue are not guaranteed; field trials and actual USDA Market News prices are still needed.",
+          "validacion": "Requires validation by P1, P2 and an agronomist. Measure available nitrogen, organic matter, salinity and compaction; confirm crop contracts and prices.",
+          "cobertura_mensual": [
+            "Cubierto",
+            "Cubierto",
+            "Cubierto",
+            "Cubierto",
+            "Cubierto",
+            "Cubierto",
+            "Cubierto",
+            "Cubierto",
+            "Cubierto",
+            "Cubierto",
+            "Cubierto",
+            "Cubierto"
+          ]
+        }
+      ]
+    },
+    {
+      "parcela_id": "davis-03",
+      "prioridad": "agua",
+      "generacion": {
+        "modelo": "Demo P2: illustrative rules",
+        "version": "demo-0.1",
+        "fecha": "2026-11-14",
+        "insumos": [
+          {
+            "fuente": "NASA POWER",
+            "periodo": "2025",
+            "estado": "FICTIONAL - not queried",
+            "nota": "Test label with no verified link"
+          },
+          {
+            "fuente": "NASA SMAP",
+            "periodo": "2025",
+            "estado": "FICTIONAL - not verified"
+          },
+          {
+            "fuente": "USDA SSURGO",
+            "periodo": "2025",
+            "estado": "FICTIONAL - not verified"
+          },
+          {
+            "fuente": "USDA CropScape",
+            "periodo": "2023-2025",
+            "estado": "FICTIONAL - not verified"
+          },
+          {
+            "fuente": "USDA Market News",
+            "periodo": "2025",
+            "estado": "FICTIONAL - no market prices queried"
+          }
+        ],
+        "supuestos": [
+          "Values are invented solely to test 3-field × 4-priority synchronization.",
+          "No real yields or farm costs were calculated."
+        ],
+        "notas": "No verified link to the data team."
+      },
+      "estrategias": [
+        {
+          "id": "baseline",
+          "titulo": "Continuity / P2 baseline (test)",
+          "subtitulo": "Fictional response for water priority",
+          "cultivos": "Current crop · no additional cover",
+          "agua_mm": 585,
+          "nitrogeno_kg_acre": 4,
+          "ingreso_usd_acre": 1692,
+          "justificacion": "FICTIONAL SAMPLE. Maintains the existing practice. It is the comparison baseline, not an automatic improvement.",
+          "incertidumbre": "Values invented to test the interface; do not use for field decisions. Satellite data and yield indicators are not measurements from this individual field.",
+          "validacion": "Requires validation by P1, P2 and an agronomist. Check irrigation, fertilization, yield and observed rotation records with the grower.",
+          "cobertura_mensual": [
+            "Cubierto",
+            "Cubierto",
+            "Cubierto",
+            "Cubierto",
+            "Cubierto",
+            "Cubierto",
+            "Cubierto",
+            "Desnudo",
+            "Desnudo",
+            "Cubierto",
+            "Cubierto",
+            "Cubierto"
+          ]
+        },
+        {
+          "id": "water",
+          "titulo": "P2 water saving (test)",
+          "subtitulo": "Fictional response for water priority",
+          "cultivos": "Safflower · winter wheat · cover crop",
+          "agua_mm": 385,
+          "nitrogeno_kg_acre": 16,
+          "ingreso_usd_acre": 1599,
+          "justificacion": "FICTIONAL SAMPLE. Explores a lower-water-demand primary crop and cover to limit soil exposure.",
+          "incertidumbre": "Values invented to test the interface; do not use for field decisions. Water balances, yields and planting windows are hypothetical and depend on local soil, irrigation and climate.",
+          "validacion": "Requires validation by P1, P2 and an agronomist. Validate water availability, viable planting dates, salinity, market access and available machinery.",
+          "cobertura_mensual": [
+            "Cubierto",
+            "Cubierto",
+            "Cubierto",
+            "Cubierto",
+            "Cubierto",
+            "Cubierto",
+            "Cubierto",
+            "Cubierto",
+            "Cubierto",
+            "Cubierto",
+            "Cubierto",
+            "Cubierto"
+          ]
+        },
+        {
+          "id": "regen",
+          "titulo": "P2 regenerative (test)",
+          "subtitulo": "Fictional response for water priority",
+          "cultivos": "Chickpea · processing tomato · clover",
+          "agua_mm": 463,
+          "nitrogeno_kg_acre": 40,
+          "ingreso_usd_acre": 1933,
+          "justificacion": "FICTIONAL SAMPLE. Simulates legumes and cover crops to diversify rotations and explore nitrogen contributions.",
+          "incertidumbre": "Values invented to test the interface; do not use for field decisions. Nitrogen fixation and gross revenue are not guaranteed; field trials and actual USDA Market News prices are still needed.",
+          "validacion": "Requires validation by P1, P2 and an agronomist. Measure available nitrogen, organic matter, salinity and compaction; confirm crop contracts and prices.",
+          "cobertura_mensual": [
+            "Cubierto",
+            "Cubierto",
+            "Cubierto",
+            "Cubierto",
+            "Cubierto",
+            "Cubierto",
+            "Cubierto",
+            "Cubierto",
+            "Cubierto",
+            "Cubierto",
+            "Cubierto",
+            "Cubierto"
+          ]
+        }
+      ]
+    },
+    {
+      "parcela_id": "davis-03",
+      "prioridad": "suelo",
+      "generacion": {
+        "modelo": "Demo P2: illustrative rules",
+        "version": "demo-0.1",
+        "fecha": "2026-11-14",
+        "insumos": [
+          {
+            "fuente": "NASA POWER",
+            "periodo": "2025",
+            "estado": "FICTIONAL - not queried",
+            "nota": "Test label with no verified link"
+          },
+          {
+            "fuente": "NASA SMAP",
+            "periodo": "2025",
+            "estado": "FICTIONAL - not verified"
+          },
+          {
+            "fuente": "USDA SSURGO",
+            "periodo": "2025",
+            "estado": "FICTIONAL - not verified"
+          },
+          {
+            "fuente": "USDA CropScape",
+            "periodo": "2023-2025",
+            "estado": "FICTIONAL - not verified"
+          },
+          {
+            "fuente": "USDA Market News",
+            "periodo": "2025",
+            "estado": "FICTIONAL - no market prices queried"
+          }
+        ],
+        "supuestos": [
+          "Values are invented solely to test 3-field × 4-priority synchronization.",
+          "No real yields or farm costs were calculated."
+        ],
+        "notas": "No verified link to the data team."
+      },
+      "estrategias": [
+        {
+          "id": "baseline",
+          "titulo": "Continuity / P2 baseline (test)",
+          "subtitulo": "Fictional response for soil priority",
+          "cultivos": "Current crop · no additional cover",
+          "agua_mm": 585,
+          "nitrogeno_kg_acre": 4,
+          "ingreso_usd_acre": 1692,
+          "justificacion": "FICTIONAL SAMPLE. Maintains the existing practice. It is the comparison baseline, not an automatic improvement.",
+          "incertidumbre": "Values invented to test the interface; do not use for field decisions. Satellite data and yield indicators are not measurements from this individual field.",
+          "validacion": "Requires validation by P1, P2 and an agronomist. Check irrigation, fertilization, yield and observed rotation records with the grower.",
+          "cobertura_mensual": [
+            "Cubierto",
+            "Cubierto",
+            "Cubierto",
+            "Cubierto",
+            "Cubierto",
+            "Cubierto",
+            "Cubierto",
+            "Desnudo",
+            "Desnudo",
+            "Cubierto",
+            "Cubierto",
+            "Cubierto"
+          ]
+        },
+        {
+          "id": "water",
+          "titulo": "P2 water saving (test)",
+          "subtitulo": "Fictional response for soil priority",
+          "cultivos": "Safflower · winter wheat · cover crop",
+          "agua_mm": 414,
+          "nitrogeno_kg_acre": 22,
+          "ingreso_usd_acre": 1662,
+          "justificacion": "FICTIONAL SAMPLE. Explores a lower-water-demand primary crop and cover to limit soil exposure.",
+          "incertidumbre": "Values invented to test the interface; do not use for field decisions. Water balances, yields and planting windows are hypothetical and depend on local soil, irrigation and climate.",
+          "validacion": "Requires validation by P1, P2 and an agronomist. Validate water availability, viable planting dates, salinity, market access and available machinery.",
+          "cobertura_mensual": [
+            "Cubierto",
+            "Cubierto",
+            "Cubierto",
+            "Cubierto",
+            "Cubierto",
+            "Cubierto",
+            "Cubierto",
+            "Cubierto",
+            "Cubierto",
+            "Cubierto",
+            "Cubierto",
+            "Cubierto"
+          ]
+        },
+        {
+          "id": "regen",
+          "titulo": "P2 regenerative (test)",
+          "subtitulo": "Fictional response for soil priority",
+          "cultivos": "Chickpea · processing tomato · clover",
+          "agua_mm": 497,
+          "nitrogeno_kg_acre": 46,
+          "ingreso_usd_acre": 2009,
+          "justificacion": "FICTIONAL SAMPLE. Simulates legumes and cover crops to diversify rotations and explore nitrogen contributions.",
+          "incertidumbre": "Values invented to test the interface; do not use for field decisions. Nitrogen fixation and gross revenue are not guaranteed; field trials and actual USDA Market News prices are still needed.",
+          "validacion": "Requires validation by P1, P2 and an agronomist. Measure available nitrogen, organic matter, salinity and compaction; confirm crop contracts and prices.",
+          "cobertura_mensual": [
+            "Cubierto",
+            "Cubierto",
+            "Cubierto",
+            "Cubierto",
+            "Cubierto",
+            "Cubierto",
+            "Cubierto",
+            "Cubierto",
+            "Cubierto",
+            "Cubierto",
+            "Cubierto",
+            "Cubierto"
+          ]
+        }
+      ]
+    },
+    {
+      "parcela_id": "davis-03",
+      "prioridad": "rentabilidad",
+      "generacion": {
+        "modelo": "Demo P2: illustrative rules",
+        "version": "demo-0.1",
+        "fecha": "2026-11-14",
+        "insumos": [
+          {
+            "fuente": "NASA POWER",
+            "periodo": "2025",
+            "estado": "FICTIONAL - not queried",
+            "nota": "Test label with no verified link"
+          },
+          {
+            "fuente": "NASA SMAP",
+            "periodo": "2025",
+            "estado": "FICTIONAL - not verified"
+          },
+          {
+            "fuente": "USDA SSURGO",
+            "periodo": "2025",
+            "estado": "FICTIONAL - not verified"
+          },
+          {
+            "fuente": "USDA CropScape",
+            "periodo": "2023-2025",
+            "estado": "FICTIONAL - not verified"
+          },
+          {
+            "fuente": "USDA Market News",
+            "periodo": "2025",
+            "estado": "FICTIONAL - no market prices queried"
+          }
+        ],
+        "supuestos": [
+          "Values are invented solely to test 3-field × 4-priority synchronization.",
+          "No real yields or farm costs were calculated."
+        ],
+        "notas": "No verified link to the data team."
+      },
+      "estrategias": [
+        {
+          "id": "baseline",
+          "titulo": "Continuity / P2 baseline (test)",
+          "subtitulo": "Fictional response for profitability priority",
+          "cultivos": "Current crop · no additional cover",
+          "agua_mm": 585,
+          "nitrogeno_kg_acre": 4,
+          "ingreso_usd_acre": 1692,
+          "justificacion": "FICTIONAL SAMPLE. Maintains the existing practice. It is the comparison baseline, not an automatic improvement.",
+          "incertidumbre": "Values invented to test the interface; do not use for field decisions. Satellite data and yield indicators are not measurements from this individual field.",
+          "validacion": "Requires validation by P1, P2 and an agronomist. Check irrigation, fertilization, yield and observed rotation records with the grower.",
+          "cobertura_mensual": [
+            "Cubierto",
+            "Cubierto",
+            "Cubierto",
+            "Cubierto",
+            "Cubierto",
+            "Cubierto",
+            "Cubierto",
+            "Desnudo",
+            "Desnudo",
+            "Cubierto",
+            "Cubierto",
+            "Cubierto"
+          ]
+        },
+        {
+          "id": "water",
+          "titulo": "P2 water saving (test)",
+          "subtitulo": "Fictional response for profitability priority",
+          "cultivos": "Safflower · winter wheat · cover crop",
+          "agua_mm": 416,
+          "nitrogeno_kg_acre": 16,
+          "ingreso_usd_acre": 1741,
+          "justificacion": "FICTIONAL SAMPLE. Explores a lower-water-demand primary crop and cover to limit soil exposure.",
+          "incertidumbre": "Values invented to test the interface; do not use for field decisions. Water balances, yields and planting windows are hypothetical and depend on local soil, irrigation and climate.",
+          "validacion": "Requires validation by P1, P2 and an agronomist. Validate water availability, viable planting dates, salinity, market access and available machinery.",
+          "cobertura_mensual": [
+            "Cubierto",
+            "Cubierto",
+            "Cubierto",
+            "Cubierto",
+            "Cubierto",
+            "Cubierto",
+            "Cubierto",
+            "Cubierto",
+            "Cubierto",
+            "Cubierto",
+            "Cubierto",
+            "Cubierto"
+          ]
+        },
+        {
+          "id": "regen",
+          "titulo": "P2 regenerative (test)",
+          "subtitulo": "Fictional response for profitability priority",
+          "cultivos": "Chickpea · processing tomato · clover",
+          "agua_mm": 499,
+          "nitrogeno_kg_acre": 40,
+          "ingreso_usd_acre": 2104,
+          "justificacion": "FICTIONAL SAMPLE. Simulates legumes and cover crops to diversify rotations and explore nitrogen contributions.",
+          "incertidumbre": "Values invented to test the interface; do not use for field decisions. Nitrogen fixation and gross revenue are not guaranteed; field trials and actual USDA Market News prices are still needed.",
+          "validacion": "Requires validation by P1, P2 and an agronomist. Measure available nitrogen, organic matter, salinity and compaction; confirm crop contracts and prices.",
+          "cobertura_mensual": [
+            "Cubierto",
+            "Cubierto",
+            "Cubierto",
+            "Cubierto",
+            "Cubierto",
+            "Cubierto",
+            "Cubierto",
+            "Cubierto",
+            "Cubierto",
+            "Cubierto",
+            "Cubierto",
+            "Cubierto"
+          ]
+        }
+      ]
+    },
+    {
+      "parcela_id": "davis-03",
+      "prioridad": "erosion",
+      "generacion": {
+        "modelo": "Demo P2: illustrative rules",
+        "version": "demo-0.1",
+        "fecha": "2026-11-14",
+        "insumos": [
+          {
+            "fuente": "NASA POWER",
+            "periodo": "2025",
+            "estado": "FICTIONAL - not queried",
+            "nota": "Test label with no verified link"
+          },
+          {
+            "fuente": "NASA SMAP",
+            "periodo": "2025",
+            "estado": "FICTIONAL - not verified"
+          },
+          {
+            "fuente": "USDA SSURGO",
+            "periodo": "2025",
+            "estado": "FICTIONAL - not verified"
+          },
+          {
+            "fuente": "USDA CropScape",
+            "periodo": "2023-2025",
+            "estado": "FICTIONAL - not verified"
+          },
+          {
+            "fuente": "USDA Market News",
+            "periodo": "2025",
+            "estado": "FICTIONAL - no market prices queried"
+          }
+        ],
+        "supuestos": [
+          "Values are invented solely to test 3-field × 4-priority synchronization.",
+          "No real yields or farm costs were calculated."
+        ],
+        "notas": "No verified link to the data team."
+      },
+      "estrategias": [
+        {
+          "id": "baseline",
+          "titulo": "Continuity / P2 baseline (test)",
+          "subtitulo": "Fictional response for erosion priority",
+          "cultivos": "Current crop · no additional cover",
+          "agua_mm": 585,
+          "nitrogeno_kg_acre": 4,
+          "ingreso_usd_acre": 1692,
+          "justificacion": "FICTIONAL SAMPLE. Maintains the existing practice. It is the comparison baseline, not an automatic improvement.",
+          "incertidumbre": "Values invented to test the interface; do not use for field decisions. Satellite data and yield indicators are not measurements from this individual field.",
+          "validacion": "Requires validation by P1, P2 and an agronomist. Check irrigation, fertilization, yield and observed rotation records with the grower.",
+          "cobertura_mensual": [
+            "Cubierto",
+            "Cubierto",
+            "Cubierto",
+            "Cubierto",
+            "Cubierto",
+            "Cubierto",
+            "Cubierto",
+            "Desnudo",
+            "Desnudo",
+            "Cubierto",
+            "Cubierto",
+            "Cubierto"
+          ]
+        },
+        {
+          "id": "water",
+          "titulo": "P2 water saving (test)",
+          "subtitulo": "Fictional response for erosion priority",
+          "cultivos": "Safflower · winter wheat · cover crop",
+          "agua_mm": 410,
+          "nitrogeno_kg_acre": 16,
+          "ingreso_usd_acre": 1623,
+          "justificacion": "FICTIONAL SAMPLE. Explores a lower-water-demand primary crop and cover to limit soil exposure.",
+          "incertidumbre": "Values invented to test the interface; do not use for field decisions. Water balances, yields and planting windows are hypothetical and depend on local soil, irrigation and climate.",
+          "validacion": "Requires validation by P1, P2 and an agronomist. Validate water availability, viable planting dates, salinity, market access and available machinery.",
+          "cobertura_mensual": [
+            "Cubierto",
+            "Cubierto",
+            "Cubierto",
+            "Cubierto",
+            "Cubierto",
+            "Cubierto",
+            "Cubierto",
+            "Cubierto",
+            "Cubierto",
+            "Cubierto",
+            "Cubierto",
+            "Cubierto"
+          ]
+        },
+        {
+          "id": "regen",
+          "titulo": "P2 regenerative (test)",
+          "subtitulo": "Fictional response for erosion priority",
+          "cultivos": "Chickpea · processing tomato · clover",
+          "agua_mm": 492,
+          "nitrogeno_kg_acre": 40,
+          "ingreso_usd_acre": 1961,
+          "justificacion": "FICTIONAL SAMPLE. Simulates legumes and cover crops to diversify rotations and explore nitrogen contributions.",
+          "incertidumbre": "Values invented to test the interface; do not use for field decisions. Nitrogen fixation and gross revenue are not guaranteed; field trials and actual USDA Market News prices are still needed.",
+          "validacion": "Requires validation by P1, P2 and an agronomist. Measure available nitrogen, organic matter, salinity and compaction; confirm crop contracts and prices.",
+          "cobertura_mensual": [
+            "Cubierto",
+            "Cubierto",
+            "Cubierto",
+            "Cubierto",
+            "Cubierto",
+            "Cubierto",
+            "Cubierto",
+            "Cubierto",
+            "Cubierto",
+            "Cubierto",
+            "Cubierto",
+            "Cubierto"
+          ]
+        }
+      ]
+    }
+  ]
+}

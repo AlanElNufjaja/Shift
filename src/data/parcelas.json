@@ -1,0 +1,333 @@
+[
+  {
+    "id": "fresno-01",
+    "nombre": "South Fresno Field",
+    "ciudad": "Fresno",
+    "lat": 36.7468,
+    "lon": -119.7726,
+    "suelo_ssurgo": {
+      "textura": "Franco-arcilloso",
+      "materia_organica_pct": 1.4,
+      "riesgo_erosion": "Medio",
+      "retencion_agua": "Alta"
+    },
+    "historial_cropscape": [
+      "2023: Cotton",
+      "2024: Processing tomato",
+      "2025: Processing tomato (consecutive repetition detected)"
+    ],
+    "clima_mensual": [
+      {
+        "mes": "Enero",
+        "temp_max_c": 14.2,
+        "lluvia_mm": 48,
+        "riesgo_helada": true,
+        "humedad_smap_pct": 28.5
+      },
+      {
+        "mes": "Febrero",
+        "temp_max_c": 17,
+        "lluvia_mm": 43,
+        "riesgo_helada": true,
+        "humedad_smap_pct": 27
+      },
+      {
+        "mes": "Marzo",
+        "temp_max_c": 20,
+        "lluvia_mm": 40,
+        "riesgo_helada": false,
+        "humedad_smap_pct": 26
+      },
+      {
+        "mes": "Abril",
+        "temp_max_c": 24,
+        "lluvia_mm": 23,
+        "riesgo_helada": false,
+        "humedad_smap_pct": 24
+      },
+      {
+        "mes": "Mayo",
+        "temp_max_c": 29,
+        "lluvia_mm": 10,
+        "riesgo_helada": false,
+        "humedad_smap_pct": 21
+      },
+      {
+        "mes": "Junio",
+        "temp_max_c": 35,
+        "lluvia_mm": 4,
+        "riesgo_helada": false,
+        "humedad_smap_pct": 17
+      },
+      {
+        "mes": "Julio",
+        "temp_max_c": 39,
+        "lluvia_mm": 1,
+        "riesgo_helada": false,
+        "humedad_smap_pct": 13
+      },
+      {
+        "mes": "Agosto",
+        "temp_max_c": 38,
+        "lluvia_mm": 2,
+        "riesgo_helada": false,
+        "humedad_smap_pct": 14
+      },
+      {
+        "mes": "Septiembre",
+        "temp_max_c": 33,
+        "lluvia_mm": 8,
+        "riesgo_helada": false,
+        "humedad_smap_pct": 17
+      },
+      {
+        "mes": "Octubre",
+        "temp_max_c": 27,
+        "lluvia_mm": 18,
+        "riesgo_helada": false,
+        "humedad_smap_pct": 22
+      },
+      {
+        "mes": "Noviembre",
+        "temp_max_c": 19,
+        "lluvia_mm": 32,
+        "riesgo_helada": false,
+        "humedad_smap_pct": 25
+      },
+      {
+        "mes": "Diciembre",
+        "temp_max_c": 14,
+        "lluvia_mm": 48,
+        "riesgo_helada": true,
+        "humedad_smap_pct": 28
+      }
+    ],
+    "meses_suelo_desnudo": [
+      "Junio",
+      "Julio",
+      "Agosto",
+      "Septiembre"
+    ],
+    "datos_procedencia": "demo_sintetica"
+  },
+  {
+    "id": "bakersfield-02",
+    "nombre": "West Bakersfield Field",
+    "ciudad": "Bakersfield",
+    "lat": 35.3733,
+    "lon": -119.0187,
+    "suelo_ssurgo": {
+      "textura": "Franco-arenoso",
+      "materia_organica_pct": 0.9,
+      "riesgo_erosion": "Alto",
+      "retencion_agua": "Media"
+    },
+    "historial_cropscape": [
+      "2023: Cotton",
+      "2024: Cotton",
+      "2025: Cotton (consecutive repetition detected)"
+    ],
+    "clima_mensual": [
+      {
+        "mes": "Enero",
+        "temp_max_c": 16,
+        "lluvia_mm": 34,
+        "riesgo_helada": true,
+        "humedad_smap_pct": 22
+      },
+      {
+        "mes": "Febrero",
+        "temp_max_c": 18,
+        "lluvia_mm": 31,
+        "riesgo_helada": true,
+        "humedad_smap_pct": 21
+      },
+      {
+        "mes": "Marzo",
+        "temp_max_c": 22,
+        "lluvia_mm": 26,
+        "riesgo_helada": false,
+        "humedad_smap_pct": 19
+      },
+      {
+        "mes": "Abril",
+        "temp_max_c": 26,
+        "lluvia_mm": 12,
+        "riesgo_helada": false,
+        "humedad_smap_pct": 18
+      },
+      {
+        "mes": "Mayo",
+        "temp_max_c": 31,
+        "lluvia_mm": 6,
+        "riesgo_helada": false,
+        "humedad_smap_pct": 16
+      },
+      {
+        "mes": "Junio",
+        "temp_max_c": 37,
+        "lluvia_mm": 2,
+        "riesgo_helada": false,
+        "humedad_smap_pct": 13
+      },
+      {
+        "mes": "Julio",
+        "temp_max_c": 41,
+        "lluvia_mm": 1,
+        "riesgo_helada": false,
+        "humedad_smap_pct": 11
+      },
+      {
+        "mes": "Agosto",
+        "temp_max_c": 40,
+        "lluvia_mm": 2,
+        "riesgo_helada": false,
+        "humedad_smap_pct": 12
+      },
+      {
+        "mes": "Septiembre",
+        "temp_max_c": 35,
+        "lluvia_mm": 5,
+        "riesgo_helada": false,
+        "humedad_smap_pct": 14
+      },
+      {
+        "mes": "Octubre",
+        "temp_max_c": 29,
+        "lluvia_mm": 11,
+        "riesgo_helada": false,
+        "humedad_smap_pct": 17
+      },
+      {
+        "mes": "Noviembre",
+        "temp_max_c": 21,
+        "lluvia_mm": 21,
+        "riesgo_helada": false,
+        "humedad_smap_pct": 19
+      },
+      {
+        "mes": "Diciembre",
+        "temp_max_c": 16,
+        "lluvia_mm": 36,
+        "riesgo_helada": true,
+        "humedad_smap_pct": 21
+      }
+    ],
+    "meses_suelo_desnudo": [
+      "Mayo",
+      "Junio",
+      "Julio",
+      "Agosto"
+    ],
+    "datos_procedencia": "demo_sintetica"
+  },
+  {
+    "id": "davis-03",
+    "nombre": "Davis / Woodland Field",
+    "ciudad": "Davis / Woodland",
+    "lat": 38.5449,
+    "lon": -121.7405,
+    "suelo_ssurgo": {
+      "textura": "Franco-limoso",
+      "materia_organica_pct": 2.1,
+      "riesgo_erosion": "Bajo",
+      "retencion_agua": "Alta"
+    },
+    "historial_cropscape": [
+      "2023: Winter wheat",
+      "2024: Processing tomato",
+      "2025: Garbanzo"
+    ],
+    "clima_mensual": [
+      {
+        "mes": "Enero",
+        "temp_max_c": 13,
+        "lluvia_mm": 80,
+        "riesgo_helada": true,
+        "humedad_smap_pct": 32
+      },
+      {
+        "mes": "Febrero",
+        "temp_max_c": 15,
+        "lluvia_mm": 70,
+        "riesgo_helada": true,
+        "humedad_smap_pct": 31
+      },
+      {
+        "mes": "Marzo",
+        "temp_max_c": 19,
+        "lluvia_mm": 54,
+        "riesgo_helada": false,
+        "humedad_smap_pct": 29
+      },
+      {
+        "mes": "Abril",
+        "temp_max_c": 23,
+        "lluvia_mm": 29,
+        "riesgo_helada": false,
+        "humedad_smap_pct": 26
+      },
+      {
+        "mes": "Mayo",
+        "temp_max_c": 28,
+        "lluvia_mm": 11,
+        "riesgo_helada": false,
+        "humedad_smap_pct": 24
+      },
+      {
+        "mes": "Junio",
+        "temp_max_c": 33,
+        "lluvia_mm": 3,
+        "riesgo_helada": false,
+        "humedad_smap_pct": 20
+      },
+      {
+        "mes": "Julio",
+        "temp_max_c": 36,
+        "lluvia_mm": 1,
+        "riesgo_helada": false,
+        "humedad_smap_pct": 17
+      },
+      {
+        "mes": "Agosto",
+        "temp_max_c": 35,
+        "lluvia_mm": 2,
+        "riesgo_helada": false,
+        "humedad_smap_pct": 16
+      },
+      {
+        "mes": "Septiembre",
+        "temp_max_c": 32,
+        "lluvia_mm": 8,
+        "riesgo_helada": false,
+        "humedad_smap_pct": 20
+      },
+      {
+        "mes": "Octubre",
+        "temp_max_c": 26,
+        "lluvia_mm": 26,
+        "riesgo_helada": false,
+        "humedad_smap_pct": 25
+      },
+      {
+        "mes": "Noviembre",
+        "temp_max_c": 18,
+        "lluvia_mm": 52,
+        "riesgo_helada": false,
+        "humedad_smap_pct": 29
+      },
+      {
+        "mes": "Diciembre",
+        "temp_max_c": 13,
+        "lluvia_mm": 78,
+        "riesgo_helada": true,
+        "humedad_smap_pct": 32
+      }
+    ],
+    "meses_suelo_desnudo": [
+      "Agosto",
+      "Septiembre"
+    ],
+    "datos_procedencia": "demo_sintetica"
+  }
+]

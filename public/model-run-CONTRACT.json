@@ -1,0 +1,83 @@
+{
+  "schema_version": "field-shift.model-run.v1",
+  "kind": "model-run",
+  "fictional": false,
+  "metadata": {
+    "model_id": "REPLACE_WITH_P2_MODEL_NAME",
+    "version": "REPLACE_WITH_VERSION",
+    "method": "REPLACE_WITH_METHOD",
+    "executed_at": "2026-11-14T00:00:00Z",
+    "code_reference": "REPLACE_WITH_GIT_COMMIT_OR_CODE_URL",
+    "input_sources": [
+      {
+        "source": "REPLACE_WITH_SOURCE",
+        "period": "2024"
+      }
+    ]
+  },
+  "results": [
+    {
+      "field_id": "fresno-01",
+      "year": 2024,
+      "coordinates": {
+        "lat": 36.6,
+        "lon": -120.1
+      },
+      "score": 32.3,
+      "category": "No_Recomendado",
+      "recorded_crop": "Tomato",
+      "candidate_crops": [
+        "Safflower",
+        "Wheat"
+      ],
+      "inputs": {
+        "Disponibilidad_Hidrica": 0.62,
+        "Estres_Termico": 0.99,
+        "Salud_suelo": 0.45,
+        "Historial_Monocultivo": 3.0
+      }
+    },
+    {
+      "field_id": "bakersfield-02",
+      "year": 2024,
+      "coordinates": {
+        "lat": 35.5,
+        "lon": -119.25
+      },
+      "score": 18.65,
+      "category": "No_Recomendado",
+      "recorded_crop": "Cotton",
+      "candidate_crops": [
+        "Safflower",
+        "Wheat"
+      ],
+      "inputs": {
+        "Disponibilidad_Hidrica": 0.49,
+        "Estres_Termico": 0.93,
+        "Salud_suelo": 0.26,
+        "Historial_Monocultivo": 3.0
+      }
+    },
+    {
+      "field_id": "davis-03",
+      "year": 2024,
+      "coordinates": {
+        "lat": 38.55,
+        "lon": -121.8
+      },
+      "score": 50.0,
+      "category": "Aceptable",
+      "recorded_crop": "Tomato",
+      "candidate_crops": [
+        "Tomato",
+        "Safflower"
+      ],
+      "inputs": {
+        "Disponibilidad_Hidrica": 0.8,
+        "Estres_Termico": 0.92,
+        "Salud_suelo": 0.76,
+        "Historial_Monocultivo": 0.0
+      }
+    }
+  ]
+}

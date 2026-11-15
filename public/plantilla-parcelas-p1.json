@@ -1,0 +1,133 @@
+{
+  "parcelas": [
+    {
+      "id": "fresno-01",
+      "nombre": "South Fresno Field",
+      "ciudad": "Fresno",
+      "lat": 36.7468,
+      "lon": -119.7726,
+      "suelo_ssurgo": {
+        "textura": null,
+        "materia_organica_pct": null,
+        "retencion_agua": null,
+        "riesgo_erosion": null
+      },
+      "historial_cropscape": [],
+      "meses_suelo_desnudo": [],
+      "clima_mensual": [
+        {
+          "mes": "Enero",
+          "humedad_smap_m3m3": null,
+          "temp_max_c": null,
+          "lluvia_mm": null
+        },
+        {
+          "mes": "Febrero",
+          "humedad_smap_m3m3": null,
+          "temp_max_c": null,
+          "lluvia_mm": null
+        },
+        {
+          "mes": "Marzo",
+          "humedad_smap_m3m3": null,
+          "temp_max_c": null,
+          "lluvia_mm": null
+        },
+        {
+          "mes": "Abril",
+          "humedad_smap_m3m3": null,
+          "temp_max_c": null,
+          "lluvia_mm": null
+        },
+        {
+          "mes": "Mayo",
+          "humedad_smap_m3m3": null,
+          "temp_max_c": null,
+          "lluvia_mm": null
+        },
+        {
+          "mes": "Junio",
+          "humedad_smap_m3m3": null,
+          "temp_max_c": null,
+          "lluvia_mm": null
+        },
+        {
+          "mes": "Julio",
+          "humedad_smap_m3m3": null,
+          "temp_max_c": null,
+          "lluvia_mm": null
+        },
+        {
+          "mes": "Agosto",
+          "humedad_smap_m3m3": null,
+          "temp_max_c": null,
+          "lluvia_mm": null
+        },
+        {
+          "mes": "Septiembre",
+          "humedad_smap_m3m3": null,
+          "temp_max_c": null,
+          "lluvia_mm": null
+        },
+        {
+          "mes": "Octubre",
+          "humedad_smap_m3m3": null,
+          "temp_max_c": null,
+          "lluvia_mm": null
+        },
+        {
+          "mes": "Noviembre",
+          "humedad_smap_m3m3": null,
+          "temp_max_c": null,
+          "lluvia_mm": null
+        },
+        {
+          "mes": "Diciembre",
+          "humedad_smap_m3m3": null,
+          "temp_max_c": null,
+          "lluvia_mm": null
+        }
+      ],
+      "datos_procedencia": {
+        "power": {
+          "fuente": "NASA POWER",
+          "periodo": "2025",
+          "unidad": "°C and mm/day",
+          "url": "https://power.larc.nasa.gov/",
+          "metodo": "Not imported here; query NASA POWER through the app."
+        },
+        "smap": {
+          "fuente": "NASA SMAP",
+          "periodo": "2025",
+          "anio": 2025,
+          "producto": "SPL4SMGP L4 (SPECIFY ACTUAL PRODUCT)",
+          "resolucion_km": 9,
+          "unidad": "m3/m3",
+          "variable": "surface_sm 0-5 cm",
+          "metodo": "Monthly extraction or aggregation (describe method)",
+          "url": "https://nsidc.org/"
+        },
+        "ssurgo": {
+          "fuente": "USDA SSURGO",
+          "periodo": "2025",
+          "unidad": "organic matter %, texture and categories",
+          "metodo": "Soil-map-unit association (describe method)",
+          "mukey": "ENTER_MUKEY",
+          "url": "https://www.nrcs.usda.gov/resources/data-and-reports/ssurgo-portal"
+        },
+        "cropscape": {
+          "fuente": "USDA CropScape CDL",
+          "periodo": "2023-2025",
+          "unidad": "annual crop classification",
+          "resoluciones_por_anio": {
+            "2023": 30,
+            "2024": 10,
+            "2025": 10
+          },
+          "metodo": "Pixel classification at coordinates (describe method)",
+          "url": "https://www.nass.usda.gov/Research_and_Science/Cropland/"
+        }
+      }
+    }
+  ]
+}

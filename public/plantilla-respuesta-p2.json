@@ -1,0 +1,107 @@
+{
+  "version": "1.0",
+  "tipo_dato": "declarado",
+  "resultados": [
+    {
+      "parcela_id": "fresno-01",
+      "prioridad": "agua",
+      "generacion": {
+        "modelo": "REPLACE: name of P2 engine",
+        "version": "0.1",
+        "fecha": "2026-11-14",
+        "insumos": [
+          {
+            "fuente": "NASA POWER",
+            "periodo": "2025",
+            "estado": "declared; review provenance",
+            "nota": "Replace with the actual inputs used"
+          }
+        ],
+        "supuestos": [
+          "REPLACE: describe agronomic criteria, yields and prices used."
+        ],
+        "notas": "TEMPLATE: replace all example numbers before supplying real data."
+      },
+      "estrategias": [
+        {
+          "id": "baseline",
+          "titulo": "Current rotation",
+          "subtitulo": "Replace example values.",
+          "cultivos": "Current crop · no extra cover",
+          "agua_mm": 625,
+          "nitrogeno_kg_acre": 4,
+          "ingreso_usd_acre": 1752,
+          "justificacion": "REPLACE: explain why this is suggested using the actual model and data sources.",
+          "incertidumbre": "REPLACE: describe variability, resolution and calculation limitations.",
+          "validacion": "REPLACE: describe agronomic checks required in the field.",
+          "cobertura_mensual": [
+            "Cubierto",
+            "Cubierto",
+            "Cubierto",
+            "Cubierto",
+            "Cubierto",
+            "Desnudo",
+            "Desnudo",
+            "Desnudo",
+            "Desnudo",
+            "Cubierto",
+            "Cubierto",
+            "Cubierto"
+          ]
+        },
+        {
+          "id": "water",
+          "titulo": "Water resilience",
+          "subtitulo": "Replace example values.",
+          "cultivos": "Safflower · winter wheat · cover crop",
+          "agua_mm": 394,
+          "nitrogeno_kg_acre": 16,
+          "ingreso_usd_acre": 1655,
+          "justificacion": "REPLACE: explain why this is suggested using the actual model and data sources.",
+          "incertidumbre": "REPLACE: describe variability, resolution and calculation limitations.",
+          "validacion": "REPLACE: describe agronomic checks required in the field.",
+          "cobertura_mensual": [
+            "Cubierto",
+            "Cubierto",
+            "Cubierto",
+            "Cubierto",
+            "Cubierto",
+            "Cubierto",
+            "Cubierto",
+            "Cubierto",
+            "Cubierto",
+            "Cubierto",
+            "Cubierto",
+            "Cubierto"
+          ]
+        },
+        {
+          "id": "regen",
+          "titulo": "Regenerative + market",
+          "subtitulo": "Replace example values.",
+          "cultivos": "Chickpea · processing tomato · clover",
+          "agua_mm": 491,
+          "nitrogeno_kg_acre": 40,
+          "ingreso_usd_acre": 2001,
+          "justificacion": "REPLACE: explain why this is suggested using the actual model and data sources.",
+          "incertidumbre": "REPLACE: describe variability, resolution and calculation limitations.",
+          "validacion": "REPLACE: describe agronomic checks required in the field.",
+          "cobertura_mensual": [
+            "Cubierto",
+            "Cubierto",
+            "Cubierto",
+            "Cubierto",
+            "Cubierto",
+            "Cubierto",
+            "Cubierto",
+            "Cubierto",
+            "Cubierto",
+            "Cubierto",
+            "Cubierto",
+            "Cubierto"
+          ]
+        }
+      ]
+    }
+  ]
+}

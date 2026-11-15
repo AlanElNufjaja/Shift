@@ -1,0 +1,16 @@
+# Render Blueprint: one free web service for React and FastAPI.
+# No API keys required for the public evaluation demo.
+services:
+  - type: web
+    name: field-shift-judge-demo
+    runtime: docker
+    plan: free
+    dockerfilePath: ./Dockerfile
+    dockerContext: .
+    healthCheckPath: /api/health
+    autoDeployTrigger: commit
+    envVars:
+      - key: FIELD_SHIFT_MARKET_LOCAL_MODE
+        value: "0"
+      - key: FIELD_SHIFT_APPEEARS_LOCAL_MODE
+        value: "0"
