@@ -108,9 +108,10 @@ def health():
 @app.get('/api/models/capabilities')
 def model_capabilities():
     return {
-        "status": "executable",
+        "status": "executable-unvalidated",
         "model_execution_available": True,
-        "engine_version": "CosoNASA-Mamdani-v1.0",
+        "model_validation_status": "not-independently-validated",
+        "engine_version": "CosoNASA-Mamdani-25Rules",
         "supported_archive_year": 2024,
         "pilot_fields": ["fresno-01", "bakersfield-02", "davis-03"],
         "model_run_contract": "field-shift.model-run.v1",
