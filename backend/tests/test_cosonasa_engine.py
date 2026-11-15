@@ -25,16 +25,16 @@ class MembershipFunctionTests(unittest.TestCase):
             engine.trimf(0.0, 0.0, 0.0, 1.0)
 
     def test_rule_table_contains_25_rules_and_score_is_bounded(self):
-        self.assertEqual(len([
-            (1, 0, 0, 0, 1), (1, 0, 1, 0, 1), (0, 0, 1, 3, 1), (2, 0, 0, 3, 1),
-            (2, 2, 2, 0, 2), (0, 0, 2, 2, 2), (3, 3, 0, 0, 2), (3, 1, 3, 1, 3),
-            (0, 0, 3, 1, 3), (3, 0, 3, 2, 3), (1, 2, 0, 0, 1), (1, 1, 3, 1, 2),
-            (2, 1, 3, 1, 3), (2, 3, 1, 0, 1), (2, 3, 3, 1, 1), (3, 0, 1, 3, 1),
-            (3, 2, 2, 0, 2), (3, 2, 3, 1, 3), (2, 0, 1, 1, 2), (3, 0, 1, 1, 2),
-            (2, 0, 1, 2, 1), (3, 0, 1, 2, 1), (2, 3, 2, 0, 1), (3, 1, 2, 0, 2),
-            (2, 0, 3, 2, 2)
-        ]), 25)
-        score = engine.evaluar_cosonasa_25(0.5, 0.5, 0.5, 2.0)
+        import itertools
+        self.assertEqual(len(engine.REGLAS_COSONASA_28), 28)
+        covered = [
+            combination for combination in itertools.product((1, 2, 3), repeat=4)
+            if any(all(rule_value == 0 or rule_value == value
+                       for rule_value, value in zip(rule[:4], combination))
+                   for rule in engine.REGLAS_COSONASA_28)
+        ]
+        self.assertEqual(len(covered), 81)
+        score = engine.evaluar_cosonasa_28(0.5, 0.5, 0.5, 2.0)
         self.assertGreaterEqual(score, 0)
         self.assertLessEqual(score, 100)
 
