@@ -100,7 +100,9 @@ def evaluar_cosonasa_28(disp_hidrica: float, estres_termico: float, salud_suelo:
         act = min(vals) if vals else 0.0
         agregacion = np.maximum(agregacion, np.minimum(act, mf_out[out_idx]))
 
-    return 55.0 if np.sum(agregacion) == 0 else round(float(np.sum(x_out * agregacion) / np.sum(agregacion)), 2)
+    if not np.any(agregacion):
+        raise ValueError("CosoNASA rule base did not activate for the supplied inputs.")
+    return round(float(np.sum(x_out * agregacion) / np.sum(agregacion)), 2)
 
 
 # =====================================================================
@@ -226,8 +228,8 @@ def simular_estrategias_predictivas(cultivo_actual: str, agua_n: float, calor_n:
         {
             "id": "baseline-current",
             "name": f"Baseline: Continue {cultivo_actual}",
-            "sequence": [cultivo_actual, cultivo_actual, "Fallow"],
-            "suitability_score": max(40.0, score_base),
+            "sequence": [cultivo_actual, cultivo_actual, "Descanso"],
+            "suitability_score": score_base,
             "water_demand": CATALOGO_CULTIVOS.get(cultivo_actual, CATALOGO_CULTIVOS["Maíz"])["demanda_agua"],
             "rationale": f"Maintains current crop ({cultivo_actual}). Continuous repetition can increase soil fatigue and moisture stress.",
             "risks": "Higher vulnerability to heatwaves and gradual organic matter depletion."
@@ -235,8 +237,8 @@ def simular_estrategias_predictivas(cultivo_actual: str, agua_n: float, calor_n:
         {
             "id": "water-resilient",
             "name": "Strategy 2: Water Resilience & Nitrogen Fixation",
-            "sequence": [ranking[0]["cultivo"] if len(ranking) > 0 else "Safflower", "Wheat", "Alfalfa"],
-            "suitability_score": max(55.0, score_agua),
+            "sequence": [ranking[0]["cultivo"] if len(ranking) > 0 else "Cártamo", "Trigo", "Alfalfa"],
+            "suitability_score": score_agua,
             "water_demand": "Very Low -> Low",
             "rationale": f"Introduces drought-tolerant rotation ({ranking[0]['cultivo'] if len(ranking) > 0 else 'Safflower'}) to cut irrigation pressure and restore soil structure.",
             "risks": "Requires careful water scheduling during establishment."
@@ -244,8 +246,8 @@ def simular_estrategias_predictivas(cultivo_actual: str, agua_n: float, calor_n:
         {
             "id": "economic-balanced",
             "name": "Strategy 3: Balanced Commercial Rotation",
-            "sequence": ["Wheat", ranking[1]["cultivo"] if len(ranking) > 1 else "Cotton", "Safflower"],
-            "suitability_score": max(50.0, score_econ),
+            "sequence": ["Trigo", ranking[1]["cultivo"] if len(ranking) > 1 else "Algodón", "Cártamo"],
+            "suitability_score": score_econ,
             "water_demand": "Moderate (Balanced)",
             "rationale": "Alternates low-water grains with high-value cash crops to optimize earnings while preserving moisture.",
             "risks": "Sensitive to seasonal commodity market price shifts."
@@ -334,6 +336,7 @@ def ejecutar_modelo_predictivo_coordenadas(
                 "temp_max_c": t_max,
                 "temp_min_c": t_min,
                 "lluvia_mm_dia": lluvia,
+                "lluvia_mm": round(lluvia * 30, 1) if lluvia is not None else None,
                 "riesgo_helada": (t_min <= 2.5) if t_min is not None else None,
                 "humedad_suelo_pct": round(humedad * 100, 1) if humedad is not None else None,
                 "cultivo_principal": cultivo_anio,
