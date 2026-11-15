@@ -1,18 +1,20 @@
 import math
+from datetime import date, timedelta
+import calendar
 import numpy as np
 import requests
 from typing import Optional
 
 CATALOGO_CULTIVOS = {
-    "Tomate":   {"codigo_cdl": 54, "precio_usd_ton": 112.5,  "demanda_agua": "Alta",     "fija_nitrogeno": False, "rendimiento_ha": 95.0},
-    "Algodón":  {"codigo_cdl": 2,  "precio_usd_ton": 1680.0, "demanda_agua": "Alta",     "fija_nitrogeno": False, "rendimiento_ha": 1.8},
-    "Trigo":    {"codigo_cdl": 24, "precio_usd_ton": 245.0,  "demanda_agua": "Baja",     "fija_nitrogeno": False, "rendimiento_ha": 6.5},
-    "Cártamo":  {"codigo_cdl": 33, "precio_usd_ton": 580.0,  "demanda_agua": "Muy Baja", "fija_nitrogeno": False, "rendimiento_ha": 3.2},
-    "Alfalfa":  {"codigo_cdl": 36, "precio_usd_ton": 230.0,  "demanda_agua": "Muy Alta", "fija_nitrogeno": True,  "rendimiento_ha": 16.0},
-    "Maíz":     {"codigo_cdl": 1,  "precio_usd_ton": 195.0,  "demanda_agua": "Alta",     "fija_nitrogeno": False, "rendimiento_ha": 12.0},
-    "Nuez":     {"codigo_cdl": 75, "precio_usd_ton": 3500.0, "demanda_agua": "Alta",     "fija_nitrogeno": False, "rendimiento_ha": 2.5},
-    "Manzana":  {"codigo_cdl": 68, "precio_usd_ton": 650.0,  "demanda_agua": "Alta",     "fija_nitrogeno": False, "rendimiento_ha": 40.0},
-    "Descanso": {"codigo_cdl": 61, "precio_usd_ton": 0.0,    "demanda_agua": "Nula",     "fija_nitrogeno": True,  "rendimiento_ha": 0.0}
+    "Tomate":   {"codigo_cdl": 54, "precio_usd_ton": 112.5,  "demanda_agua": "Alta",     "fija_nitrogeno": False, "rendimiento_ha": 95.0, "ciclo_dias": 150},
+    "Algodón":  {"codigo_cdl": 2,  "precio_usd_ton": 1680.0, "demanda_agua": "Alta",     "fija_nitrogeno": False, "rendimiento_ha": 1.8, "ciclo_dias": 170},
+    "Trigo":    {"codigo_cdl": 24, "precio_usd_ton": 245.0,  "demanda_agua": "Baja",     "fija_nitrogeno": False, "rendimiento_ha": 6.5, "ciclo_dias": 150},
+    "Cártamo":  {"codigo_cdl": 33, "precio_usd_ton": 580.0,  "demanda_agua": "Muy Baja", "fija_nitrogeno": False, "rendimiento_ha": 3.2, "ciclo_dias": 130},
+    "Alfalfa":  {"codigo_cdl": 36, "precio_usd_ton": 230.0,  "demanda_agua": "Muy Alta", "fija_nitrogeno": True,  "rendimiento_ha": 16.0, "ciclo_dias": 365},
+    "Maíz":     {"codigo_cdl": 1,  "precio_usd_ton": 195.0,  "demanda_agua": "Alta",     "fija_nitrogeno": False, "rendimiento_ha": 12.0, "ciclo_dias": 150},
+    "Nuez":     {"codigo_cdl": 75, "precio_usd_ton": 3500.0, "demanda_agua": "Alta",     "fija_nitrogeno": False, "rendimiento_ha": 2.5, "ciclo_dias": 365},
+    "Manzana":  {"codigo_cdl": 68, "precio_usd_ton": 650.0,  "demanda_agua": "Alta",     "fija_nitrogeno": False, "rendimiento_ha": 40.0, "ciclo_dias": 365},
+    "Descanso": {"codigo_cdl": 61, "precio_usd_ton": 0.0,    "demanda_agua": "Nula",     "fija_nitrogeno": True,  "rendimiento_ha": 0.0, "ciclo_dias": 0}
 }
 
 FACTOR_DEMANDA_AGUA = {"Muy Baja": 1.35, "Baja": 1.15, "Alta": 0.85, "Muy Alta": 0.65, "Nula": 1.40}
@@ -275,18 +277,57 @@ def obtener_agua_subterranea_usgs(lat: float, lon: float):
 # =====================================================================
 # 3. SIMULACIÓN DE ESTRATEGIAS DINÁMICAS
 # =====================================================================
-def simular_estrategias_predictivas(cultivo_actual: str, agua_n: float, calor_n: float, suelo_n: float, mono_n: float, prioridad: str):
+
+def calcular_lluvia_ciclo(fecha_siembra: date, ciclo_dias: int, climatologia_mm_dia: dict):
+    """Estimate crop-cycle precipitation from 2015-2024 NASA POWER monthly normals.
+
+    This is a climatological expectation, not a deterministic weather forecast.
+    Every calendar month touched by the crop cycle must have a monthly normal.
+    """
+    if ciclo_dias <= 0:
+        return {"lluvia_ciclo_mm": 0.0, "ciclo_dias": 0, "completo": True}
+    total = 0.0
+    for offset in range(ciclo_dias):
+        dia = fecha_siembra + timedelta(days=offset)
+        normal = climatologia_mm_dia.get(dia.month)
+        if normal is None:
+            return {"lluvia_ciclo_mm": None, "ciclo_dias": ciclo_dias, "completo": False}
+        total += normal
+    return {"lluvia_ciclo_mm": round(total, 1), "ciclo_dias": ciclo_dias, "completo": True}
+
+
+def factor_lluvia_estacional(lluvia_ciclo_mm: float, ciclo_dias: int,
+                             lluvia_media_anual_mm_dia: float) -> float:
+    """Bounded seasonal-rainfall modifier; not a crop water-balance model."""
+    if ciclo_dias <= 0 or lluvia_media_anual_mm_dia <= 0:
+        return 1.0
+    expected_at_annual_rate = lluvia_media_anual_mm_dia * ciclo_dias
+    ratio = lluvia_ciclo_mm / expected_at_annual_rate if expected_at_annual_rate else 1.0
+    return float(np.clip(1.0 + 0.35 * (ratio - 1.0), 0.70, 1.30))
+
+
+def simular_estrategias_predictivas(cultivo_actual: str, agua_n: float, calor_n: float, suelo_n: float, mono_n: float, prioridad: str, lluvia_por_cultivo: Optional[dict] = None):
     ranking = []
+    lluvia_por_cultivo = lluvia_por_cultivo or {}
     for nom_c, info_m in CATALOGO_CULTIVOS.items():
         if nom_c == "Descanso":
             continue
         nuevo_mono = min(4.0, mono_n + 1.0) if nom_c == cultivo_actual else 0.5
-        agua_ef = float(np.clip(agua_n * FACTOR_DEMANDA_AGUA[info_m["demanda_agua"]], 0.0, 1.0))
+        lluvia = lluvia_por_cultivo.get(nom_c, {})
+        lluvia_mm = lluvia.get("lluvia_ciclo_mm")
+        factor_lluvia = lluvia.get("factor_estacional", 1.0)
+        agua_ef = float(np.clip(
+            agua_n * FACTOR_DEMANDA_AGUA[info_m["demanda_agua"]] * factor_lluvia,
+            0.0, 1.0
+        ))
         sc_c = evaluar_cosonasa_28(agua_ef, calor_n, suelo_n, nuevo_mono)
         ingreso_ha = round(info_m["rendimiento_ha"] * info_m["precio_usd_ton"] * (sc_c / 100.0), 0)
         ranking.append({
             "cultivo": nom_c,
             "demanda_agua": info_m["demanda_agua"],
+            "ciclo_dias": info_m["ciclo_dias"],
+            "lluvia_ciclo_mm": lluvia_mm,
+            "factor_lluvia_estacional": round(factor_lluvia, 3),
             "rompe_monocultivo": nom_c != cultivo_actual,
             "score_proyectado": sc_c,
             "precio_usd_ton": info_m["precio_usd_ton"],
@@ -410,13 +451,41 @@ def ejecutar_modelo_predictivo_coordenadas(
                 "temp_max_c": t_max,
                 "temp_min_c": t_min,
                 "lluvia_mm_dia": lluvia,
-                "lluvia_mm": round(lluvia * 30, 1) if lluvia is not None else None,
+                "lluvia_mm": round(lluvia * calendar.monthrange(anio, int(m_num))[1], 1) if lluvia is not None else None,
                 "riesgo_helada": (t_min <= 2.5) if t_min is not None else None,
                 "humedad_suelo_pct": round(humedad * 100, 1) if humedad is not None else None,
                 "cultivo_principal": cultivo_anio,
                 "codigo_cdl": info_merc.get("codigo_cdl"),
                 "precio_usd_ton": info_merc.get("precio_usd_ton")
             })
+
+    # Build monthly rainfall normals from the 2015-2024 NASA POWER archive.
+    lluvia_por_mes = {}
+    for month in range(1, 13):
+        values = [
+            row["lluvia_mm_dia"] for row in historial_unificado
+            if int(row["fecha"].split("-")[1]) == month and row["lluvia_mm_dia"] is not None
+        ]
+        lluvia_por_mes[month] = float(np.mean(values)) if values else None
+    lluvia_media_anual_mm_dia = (
+        float(np.mean([v for v in lluvia_por_mes.values() if v is not None]))
+        if any(v is not None for v in lluvia_por_mes.values()) else 0.0
+    )
+    try:
+        fecha_inicio_ciclo = date.fromisoformat(str(fecha_siembra)) if fecha_siembra else date.today()
+    except ValueError:
+        raise ValueError("fecha_siembra must use YYYY-MM-DD.")
+
+    lluvia_por_cultivo = {}
+    for crop, crop_info in CATALOGO_CULTIVOS.items():
+        cycle = calcular_lluvia_ciclo(fecha_inicio_ciclo, crop_info["ciclo_dias"], lluvia_por_mes)
+        if cycle["completo"] and crop_info["ciclo_dias"] > 0:
+            cycle["factor_estacional"] = factor_lluvia_estacional(
+                cycle["lluvia_ciclo_mm"], crop_info["ciclo_dias"], lluvia_media_anual_mm_dia
+            )
+        else:
+            cycle["factor_estacional"] = 1.0
+        lluvia_por_cultivo[crop] = cycle
 
     # Score only when the required climate and soil inputs are actually present.
     clima_2024 = [row for row in historial_unificado if row["anio"] == 2024]
@@ -427,6 +496,8 @@ def ejecutar_modelo_predictivo_coordenadas(
         missing_data.append("NASA POWER GWETTOP: at least 9 valid monthly observations in 2024 are required.")
     if len(temp_valid) < 9:
         missing_data.append("NASA POWER T2M_MAX: at least 9 valid monthly observations in 2024 are required.")
+    if any(not profile["completo"] for crop, profile in lluvia_por_cultivo.items() if CATALOGO_CULTIVOS[crop]["ciclo_dias"] > 0):
+        missing_data.append("NASA POWER PRECTOTCORR: monthly rainfall normals are incomplete for at least one crop cycle.")
     for key, label in (
         ("materia_organica_pct", "Soil organic matter (SSURGO or local lab)"),
         ("retencion_agua_awc", "Available water capacity (SSURGO)"),
@@ -444,6 +515,12 @@ def ejecutar_modelo_predictivo_coordenadas(
         "climate_valid_months_2024": {
             "temperature_max": len(temp_valid),
             "topsoil_moisture": len(humedad_valid)
+        },
+        "rainfall_climatology": {
+            "source": "NASA POWER PRECTOTCORR monthly normals, 2015-2024",
+            "planting_date": fecha_inicio_ciclo.isoformat(),
+            "monthly_normals_available": sum(v is not None for v in lluvia_por_mes.values()),
+            "interpretation": "Climatological expectation, not a deterministic weather forecast."
         },
         "soil_source": suelo.get("fuente"),
         "soil_is_field_verified": bool(suelo.get("cobertura_verificada")),
@@ -463,6 +540,7 @@ def ejecutar_modelo_predictivo_coordenadas(
             "rotation_strategies": [],
             "crop_ranking": [],
             "historical_series_10y": historial_unificado,
+            "rainfall_by_crop_cycle": lluvia_por_cultivo,
             "message": "No recommendation was generated because required observations are missing. No substitute climate or soil values were invented."
         }
 
@@ -494,7 +572,8 @@ def ejecutar_modelo_predictivo_coordenadas(
 
     score_fis_actual = evaluar_cosonasa_28(agua_n, calor_n, suelo_n, mono_n)
     estrategias, ranking_cultivos = simular_estrategias_predictivas(
-        cultivo_reciente, agua_n, calor_n, suelo_n, mono_n, prioridad
+        cultivo_reciente, agua_n, calor_n, suelo_n, mono_n, prioridad,
+        lluvia_por_cultivo=lluvia_por_cultivo
     )
 
     return {
@@ -526,5 +605,6 @@ def ejecutar_modelo_predictivo_coordenadas(
         },
         "rotation_strategies": estrategias,
         "crop_ranking": ranking_cultivos,
+        "rainfall_by_crop_cycle": lluvia_por_cultivo,
         "historical_series_10y": historial_unificado
     }
