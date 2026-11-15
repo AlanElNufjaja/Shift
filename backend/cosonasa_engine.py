@@ -306,6 +306,38 @@ def factor_lluvia_estacional(lluvia_ciclo_mm: float, ciclo_dias: int,
     return float(np.clip(1.0 + 0.35 * (ratio - 1.0), 0.70, 1.30))
 
 
+def agregar_calendario_lluvia_estrategias(estrategias: list, fecha_inicio: date, climatologia_mm_dia: dict):
+    """Attach sequential crop-cycle rainfall estimates to each proposed rotation."""
+    for estrategia in estrategias:
+        cursor = fecha_inicio
+        calendario = []
+        total_mm = 0.0
+        completo = True
+        for cultivo in estrategia.get("sequence", []):
+            info = CATALOGO_CULTIVOS.get(cultivo, {})
+            dias = int(info.get("ciclo_dias", 0))
+            ciclo = calcular_lluvia_ciclo(cursor, dias, climatologia_mm_dia)
+            calendario.append({
+                "cultivo": cultivo,
+                "fecha_inicio": cursor.isoformat(),
+                "fecha_fin": (cursor + timedelta(days=dias - 1)).isoformat() if dias > 0 else cursor.isoformat(),
+                "ciclo_dias": dias,
+                "demanda_agua": info.get("demanda_agua", "Nula"),
+                "lluvia_esperada_mm": ciclo["lluvia_ciclo_mm"],
+                "completo": ciclo["completo"]
+            })
+            if not ciclo["completo"] or ciclo["lluvia_ciclo_mm"] is None:
+                completo = False
+            else:
+                total_mm += ciclo["lluvia_ciclo_mm"]
+            cursor += timedelta(days=dias)
+        estrategia["rainfall_schedule"] = calendario
+        estrategia["rainfall_total_mm"] = round(total_mm, 1) if completo else None
+        estrategia["rainfall_schedule_complete"] = completo
+        estrategia["rotation_duration_days"] = sum(item["ciclo_dias"] for item in calendario)
+    return estrategias
+
+
 def simular_estrategias_predictivas(cultivo_actual: str, agua_n: float, calor_n: float, suelo_n: float, mono_n: float, prioridad: str, lluvia_por_cultivo: Optional[dict] = None):
     ranking = []
     lluvia_por_cultivo = lluvia_por_cultivo or {}
@@ -580,6 +612,9 @@ def ejecutar_modelo_predictivo_coordenadas(
     estrategias, ranking_cultivos = simular_estrategias_predictivas(
         cultivo_reciente, agua_n, calor_n, suelo_n, mono_n, prioridad,
         lluvia_por_cultivo=lluvia_por_cultivo
+    )
+    estrategias = agregar_calendario_lluvia_estrategias(
+        estrategias, fecha_inicio_ciclo, lluvia_por_mes
     )
 
     return {
