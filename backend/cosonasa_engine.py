@@ -40,8 +40,22 @@ MESES_NOMBRES = ["Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", "Julio",
 
 
 # =====================================================================
-# 1. SISTEMA DIFUSO COSONASA (25 REGLAS - COBERTURA 81/81 CASOS)
+# 1. SISTEMA DIFUSO COSONASA (28 REGLAS; cobertura exhaustiva de 81 combinaciones discretas)
 # =====================================================================
+REGLAS_COSONASA_28 = (
+(1, 0, 0, 0, 1), (1, 0, 1, 0, 1), (0, 0, 1, 3, 1), (2, 0, 0, 3, 1),
+        (2, 2, 2, 0, 2), (0, 0, 2, 2, 2), (3, 3, 0, 0, 2), (3, 1, 3, 1, 3),
+        (0, 0, 3, 1, 3), (3, 0, 3, 2, 3), (1, 2, 0, 0, 1), (1, 1, 3, 1, 2),
+        (2, 1, 3, 1, 3), (2, 3, 1, 0, 1), (2, 3, 3, 1, 1), (3, 0, 1, 3, 1),
+        (3, 2, 2, 0, 2), (3, 2, 3, 1, 3),
+        (2, 0, 1, 1, 2), (3, 0, 1, 1, 2), (2, 0, 1, 2, 1), (3, 0, 1, 2, 1),
+        (2, 3, 2, 0, 1), (3, 1, 2, 0, 2), (2, 0, 3, 2, 2),
+    ]
+    # Three uncovered antecedent combinations found by exhaustive 3^4 enumeration.
+    (2, 1, 2, 1, 2), (3, 1, 3, 3, 2), (3, 2, 3, 3, 2),
+)
+
+
 def trapmf(x, a, b, c, d):
     """Trapezoidal membership with correct left/right shoulder handling."""
     if not a <= b <= c <= d:
@@ -59,7 +73,7 @@ def trimf(x, a, b, c):
     values = np.asarray(x, dtype=float)
     return np.maximum(0.0, np.minimum((values - a) / (b - a), (c - values) / (c - b)))
 
-def evaluar_cosonasa_25(disp_hidrica: float, estres_termico: float, salud_suelo: float, hist_monocultivo: float) -> float:
+def evaluar_cosonasa_28(disp_hidrica: float, estres_termico: float, salud_suelo: float, hist_monocultivo: float) -> float:
     disp_hidrica = float(np.clip(disp_hidrica, 0.0, 1.0))
     estres_termico = float(np.clip(estres_termico, 0.0, 1.0))
     salud_suelo = float(np.clip(salud_suelo, 0.0, 1.0))
@@ -70,15 +84,6 @@ def evaluar_cosonasa_25(disp_hidrica: float, estres_termico: float, salud_suelo:
     in3 = {1: trapmf(salud_suelo, 0.0, 0.0, 0.25, 0.45), 2: trimf(salud_suelo, 0.3, 0.5, 0.7), 3: trapmf(salud_suelo, 0.55, 0.8, 1.0, 1.0)}
     in4 = {1: trapmf(hist_monocultivo, 0.0, 0.0, 0.5, 1.5), 2: trimf(hist_monocultivo, 1.0, 2.0, 3.0), 3: trapmf(hist_monocultivo, 2.5, 3.5, 4.0, 4.0)}
 
-    reglas_25 = [
-        (1, 0, 0, 0, 1), (1, 0, 1, 0, 1), (0, 0, 1, 3, 1), (2, 0, 0, 3, 1),
-        (2, 2, 2, 0, 2), (0, 0, 2, 2, 2), (3, 3, 0, 0, 2), (3, 1, 3, 1, 3),
-        (0, 0, 3, 1, 3), (3, 0, 3, 2, 3), (1, 2, 0, 0, 1), (1, 1, 3, 1, 2),
-        (2, 1, 3, 1, 3), (2, 3, 1, 0, 1), (2, 3, 3, 1, 1), (3, 0, 1, 3, 1),
-        (3, 2, 2, 0, 2), (3, 2, 3, 1, 3),
-        (2, 0, 1, 1, 2), (3, 0, 1, 1, 2), (2, 0, 1, 2, 1), (3, 0, 1, 2, 1),
-        (2, 3, 2, 0, 1), (3, 1, 2, 0, 2), (2, 0, 3, 2, 2),
-    ]
 
     x_out = np.linspace(0, 100, 201)
     mf_out = {
@@ -88,7 +93,7 @@ def evaluar_cosonasa_25(disp_hidrica: float, estres_termico: float, salud_suelo:
     }
 
     agregacion = np.zeros_like(x_out)
-    for r1, r2, r3, r4, out_idx in reglas_25:
+    for r1, r2, r3, r4, out_idx in REGLAS_COSONASA_28:
         vals = [in1[r1]] if r1 > 0 else []
         if r2 > 0: vals.append(in2[r2])
         if r3 > 0: vals.append(in3[r3])
@@ -202,7 +207,7 @@ def simular_estrategias_predictivas(cultivo_actual: str, agua_n: float, calor_n:
             continue
         nuevo_mono = min(4.0, mono_n + 1.0) if nom_c == cultivo_actual else 0.5
         agua_ef = float(np.clip(agua_n * FACTOR_DEMANDA_AGUA[info_m["demanda_agua"]], 0.0, 1.0))
-        sc_c = evaluar_cosonasa_25(agua_ef, calor_n, suelo_n, nuevo_mono)
+        sc_c = evaluar_cosonasa_28(agua_ef, calor_n, suelo_n, nuevo_mono)
         ingreso_ha = round(info_m["rendimiento_ha"] * info_m["precio_usd_ton"] * (sc_c / 100.0), 0)
         ranking.append({
             "cultivo": nom_c,
@@ -214,9 +219,9 @@ def simular_estrategias_predictivas(cultivo_actual: str, agua_n: float, calor_n:
         })
     ranking.sort(key=lambda x: x["score_proyectado"], reverse=True)
 
-    score_base = evaluar_cosonasa_25(agua_n, calor_n, suelo_n, min(4.0, mono_n + 1.0))
-    score_agua = evaluar_cosonasa_25(min(agua_n * 1.35, 1.0), calor_n * 0.9, min(suelo_n * 1.30, 1.0), 0.5)
-    score_econ = evaluar_cosonasa_25(min(agua_n * 1.15, 1.0), calor_n, min(suelo_n * 1.15, 1.0), 0.5)
+    score_base = evaluar_cosonasa_28(agua_n, calor_n, suelo_n, min(4.0, mono_n + 1.0))
+    score_agua = evaluar_cosonasa_28(min(agua_n * 1.35, 1.0), calor_n * 0.9, min(suelo_n * 1.30, 1.0), 0.5)
+    score_econ = evaluar_cosonasa_28(min(agua_n * 1.15, 1.0), calor_n, min(suelo_n * 1.15, 1.0), 0.5)
 
     estrategias = [
         {
@@ -368,7 +373,7 @@ def ejecutar_modelo_predictivo_coordenadas(
     if missing_data:
         return {
             "status": "insufficient-data",
-            "model_version": "CosoNASA-Mamdani-25Rules",
+            "model_version": "CosoNASA-Mamdani-28Rules",
             "coordinates": {"lat": lat, "lon": lon},
             "location": lugar,
             "soil_properties": suelo,
@@ -407,14 +412,14 @@ def ejecutar_modelo_predictivo_coordenadas(
         mono_n = float(min(consecutive_years, 4))
         monoculture_assumption = "Derived from the pilot reference dataset; crop-history provenance is not independently verified."
 
-    score_fis_actual = evaluar_cosonasa_25(agua_n, calor_n, suelo_n, mono_n)
+    score_fis_actual = evaluar_cosonasa_28(agua_n, calor_n, suelo_n, mono_n)
     estrategias, ranking_cultivos = simular_estrategias_predictivas(
         cultivo_reciente, agua_n, calor_n, suelo_n, mono_n, prioridad
     )
 
     return {
         "status": "ok",
-        "model_version": "CosoNASA-Mamdani-25Rules",
+        "model_version": "CosoNASA-Mamdani-28Rules",
         "coordinates": {"lat": lat, "lon": lon},
         "location": lugar,
         "soil_properties": suelo,
@@ -425,9 +430,9 @@ def ejecutar_modelo_predictivo_coordenadas(
             "recommendations_are_exploratory": True
         },
         "model_reliability": {
-            "architecture": "Mamdani fuzzy inference system; 25 authored rules.",
+            "architecture": "Mamdani fuzzy inference system; 28 authored rules with all 81 discrete antecedent combinations covered.",
             "validation_status": "Not independently validated. No benchmark accuracy, R2, MAPE or error margin is claimed.",
-            "rule_count": 25
+            "rule_count": len(REGLAS_COSONASA_28)
         },
         "fuzzy_evaluation": {
             "inputs": {
