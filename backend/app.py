@@ -127,7 +127,7 @@ def model_capabilities():
         "status": "executable-unvalidated",
         "model_execution_available": True,
         "model_validation_status": "not-independently-validated",
-        "engine_version": "CosoNASA-Mamdani-25Rules",
+        "engine_version": "CosoNASA-Mamdani-28Rules",
         "supported_archive_year": 2024,
         "pilot_fields": ["fresno-01", "bakersfield-02", "davis-03"],
         "model_run_contract": "field-shift.model-run.v1",
