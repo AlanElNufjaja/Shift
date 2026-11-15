@@ -1,4 +1,5 @@
 import unittest
+from datetime import date
 from unittest.mock import patch
 
 import numpy as np
@@ -37,6 +38,28 @@ class MembershipFunctionTests(unittest.TestCase):
         score = engine.evaluar_cosonasa_28(0.5, 0.5, 0.5, 2.0)
         self.assertGreaterEqual(score, 0)
         self.assertLessEqual(score, 100)
+
+
+class RainfallCycleTests(unittest.TestCase):
+    def test_cycle_rainfall_sums_monthly_daily_normals_across_month_boundary(self):
+        result = engine.calcular_lluvia_ciclo(
+            date(2026, 1, 30), 3, {1: 2.0, 2: 4.0}
+        )
+        self.assertTrue(result["completo"])
+        self.assertEqual(result["lluvia_ciclo_mm"], 8.0)
+        self.assertEqual(result["ciclo_dias"], 3)
+
+    def test_cycle_rainfall_is_missing_when_any_required_month_is_missing(self):
+        result = engine.calcular_lluvia_ciclo(
+            date(2026, 1, 31), 2, {1: 2.0, 2: None}
+        )
+        self.assertFalse(result["completo"])
+        self.assertIsNone(result["lluvia_ciclo_mm"])
+
+    def test_seasonal_rainfall_factor_is_bounded_and_neutral_at_annual_average(self):
+        self.assertAlmostEqual(engine.factor_lluvia_estacional(100.0, 100, 1.0), 1.0)
+        self.assertLessEqual(engine.factor_lluvia_estacional(10000.0, 100, 1.0), 1.3)
+        self.assertGreaterEqual(engine.factor_lluvia_estacional(0.0, 100, 1.0), 0.7)
 
 
 class DataIntegrityTests(unittest.TestCase):
