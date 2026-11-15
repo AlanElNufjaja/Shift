@@ -249,10 +249,14 @@ def simular_estrategias_predictivas(cultivo_actual: str, agua_n: float, calor_n:
     ]
 
     if prioridad == "water":
-        estrategias.sort(key=lambda x: x["id"] == "water-resilient", reverse=True)
+        estrategias.sort(key=lambda x: (x["water_demand"] not in ("Very Low -> Low", "Muy Baja"), x["suitability_score"] * -1))
     elif prioridad == "profit":
-        estrategias.sort(key=lambda x: x["id"] == "economic-balanced", reverse=True)
+        estrategias.sort(key=lambda x: x["id"] != "economic-balanced")
+    elif prioridad == "erosion":
+        # Prefer diversified rotations over repeating the current crop.
+        estrategias.sort(key=lambda x: (x["id"] == "baseline-current", -x["suitability_score"]))
     else:
+        # "soil" and "balanced" use the FIS suitability score.
         estrategias.sort(key=lambda x: x["suitability_score"], reverse=True)
 
     return estrategias, ranking
@@ -358,8 +362,8 @@ def ejecutar_modelo_predictivo_coordenadas(
         },
         "soil_source": suelo.get("fuente"),
         "soil_is_field_verified": bool(suelo.get("cobertura_verificada")),
-        "crop_history_status": "pilot archive" if pid != "custom-coord" else "unavailable for custom coordinates",
-        "crop_history_is_observed": pid != "custom-coord"
+        "crop_history_status": "pilot reference dataset; provenance requires verification" if pid != "custom-coord" else "unavailable for custom coordinates",
+        "crop_history_is_observed": False
     }
     if missing_data:
         return {
@@ -401,7 +405,7 @@ def ejecutar_modelo_predictivo_coordenadas(
             else:
                 break
         mono_n = float(min(consecutive_years, 4))
-        monoculture_assumption = "Derived from the documented pilot crop-history archive."
+        monoculture_assumption = "Derived from the pilot reference dataset; crop-history provenance is not independently verified."
 
     score_fis_actual = evaluar_cosonasa_25(agua_n, calor_n, suelo_n, mono_n)
     estrategias, ranking_cultivos = simular_estrategias_predictivas(
