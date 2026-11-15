@@ -4,6 +4,7 @@ import { useField } from '../../context/FieldContext.jsx';
 import { useGuidedFlow } from '../../context/GuidedFlowContext.jsx';
 import { formatoNumero, numeroSeguro, PRIORIDADES } from '../../lib/diagnostics.js';
 import { resumirOpciones } from '../../lib/farmerSummary.js';
+import { displayTerm } from '../../lib/displayEnglish.js';
 import { runCosoNasaPrediction } from '../../lib/modelRunBridge.js';
 import { useTeamPilotArchive } from '../../hooks/useTeamPilotArchive.js';
 import TeamModelEvidence from '../global/TeamModelEvidence.jsx';
@@ -98,7 +99,7 @@ export default function FarmerChoices({ estrategias, fuente, cargando, error, mo
       `Field Shift · ${parcela.nombre}`,
       `Priority: ${PRIORIDADES[prioridad] || prioridad}`,
       prediccionCosoNasa?.status === 'ok'
-        ? `CosoNASA Score: ${prediccionCosoNasa.fuzzy_evaluation.suitability_score}/100 (${prediccionCosoNasa.fuzzy_evaluation.category}) · Validation: not independently validated`
+        ? `CosoNASA Score: ${prediccionCosoNasa.fuzzy_evaluation.suitability_score}/100 (${displayTerm(prediccionCosoNasa.fuzzy_evaluation.category)}) · Validation: not independently validated`
         : `Source: ${FUENTES[fuente] || 'Unverified source'}${ejemplo ? ' FICTIONAL.' : ''}`,
       topCoso
         ? `Top Strategy: ${topCoso.name} (${topCoso.sequence.join(' -> ')})`
@@ -149,15 +150,15 @@ export default function FarmerChoices({ estrategias, fuente, cargando, error, mo
               onChange={(e) => setCultivoActual(e.target.value)}
               className="mt-1 w-full rounded-lg border border-[#c9decb] bg-white px-3 py-2.5 text-sm font-semibold text-forest focus:outline-none focus:ring-2 focus:ring-[#347b50]"
             >
-              <option value="Maíz">Corn (Maíz)</option>
-              <option value="Trigo">Wheat (Trigo)</option>
-              <option value="Algodón">Cotton (Algodón)</option>
+              <option value="Maíz">Corn</option>
+              <option value="Trigo">Wheat</option>
+              <option value="Algodón">Cotton</option>
               <option value="Alfalfa">Alfalfa</option>
-              <option value="Tomate">Tomato (Tomate)</option>
-              <option value="Cártamo">Safflower (Cártamo)</option>
-              <option value="Nuez">Nuez (Walnut / Pecan)</option>
-              <option value="Manzana">Manzana (Apple)</option>
-              <option value="Descanso">Resting / Bare Soil (Descanso)</option>
+              <option value="Tomate">Tomato</option>
+              <option value="Cártamo">Safflower</option>
+              <option value="Nuez">Walnut</option>
+              <option value="Manzana">Apple</option>
+              <option value="Descanso">Fallow / Bare soil</option>
             </select>
           </div>
 
@@ -247,7 +248,7 @@ export default function FarmerChoices({ estrategias, fuente, cargando, error, mo
           )}
 
           <div className="mt-3 grid gap-2 rounded-xl bg-[#f4f9f4] p-3 text-xs text-[#4a6652] sm:grid-cols-2">
-            <p><strong>Soil Source:</strong> {prediccionCosoNasa.soil_properties?.textura} ({prediccionCosoNasa.soil_properties?.materia_organica_pct ?? 'N/A'}% OM · {prediccionCosoNasa.soil_properties?.fuente})</p>
+            <p><strong>Soil Source:</strong> {displayTerm(prediccionCosoNasa.soil_properties?.textura)} ({prediccionCosoNasa.soil_properties?.materia_organica_pct ?? 'N/A'}% OM · {prediccionCosoNasa.soil_properties?.fuente})</p>
             <p><strong>Local Groundwater:</strong> {prediccionCosoNasa.local_groundwater_usgs?.estacion_local_usgs}</p>
           </div>
 
@@ -269,7 +270,7 @@ export default function FarmerChoices({ estrategias, fuente, cargando, error, mo
                   </span>
                 </div>
                 <p className="mt-1 text-xs font-bold text-[#37734d]">
-                  Sequence: {est.sequence.join(' → ')} · Crop water-demand profile: {(est.water_demand_profile || (est.rainfall_schedule || []).map(cycle => cycle.demanda_agua)).join(' → ')}
+                  Sequence: {est.sequence.map(displayTerm).join(' → ')} · Crop water-demand profile: {(est.water_demand_profile || (est.rainfall_schedule || []).map(cycle => cycle.demanda_agua)).map(displayTerm).join(' → ')}
                 </p>
                 <div className="mt-3 rounded-lg border border-[#e3ece0] bg-white/80 p-3">
                   <div className="flex flex-wrap items-center justify-between gap-2">
@@ -287,9 +288,9 @@ export default function FarmerChoices({ estrategias, fuente, cargando, error, mo
                     {(est.rainfall_schedule || []).map((cycle, cycleIndex) => (
                       <div key={`${est.id}-rain-${cycleIndex}`} className="flex flex-wrap items-center justify-between gap-2 border-t border-[#edf1eb] pt-2 text-xs">
                         <div>
-                          <strong className="text-[#365d40]">{cycleIndex + 1}. {cycle.cultivo}</strong>
+                          <strong className="text-[#365d40]">{cycleIndex + 1}. {displayTerm(cycle.cultivo)}</strong>
                           <span className="ml-2 text-[#829286]">{cycle.ciclo_dias} days · {cycle.fecha_inicio} to {cycle.fecha_fin}</span>
-                          <p className="text-[10px] text-[#829286]">Crop water demand: {cycle.demanda_agua}</p>
+                          <p className="text-[10px] text-[#829286]">Crop water demand: {displayTerm(cycle.demanda_agua)}</p>
                         </div>
                         <strong className="text-[#285b3d]">
                           {cycle.lluvia_esperada_mm == null ? 'N/A' : `${formatoNumero(cycle.lluvia_esperada_mm, 1)} mm rain`}
@@ -327,7 +328,7 @@ export default function FarmerChoices({ estrategias, fuente, cargando, error, mo
           {estrategia ? (
             <>
               <h3 className="mt-3 text-[25px] font-extrabold leading-tight text-forest sm:text-[30px]">{estrategia.titulo}</h3>
-              <p className="mt-2 text-sm leading-relaxed text-[#607965]">{estrategia.cultivos || 'Crops not specified.'}</p>
+              <p className="mt-2 text-sm leading-relaxed text-[#607965]">{displayTerm(estrategia.cultivos || 'Crops not specified.')}</p>
               <div className="mt-5 grid gap-3 sm:grid-cols-2">
                 <Diferencia etiqueta="Water use" delta={resultado.agua} unidad="mm/cycle" invertir />
                 <Diferencia etiqueta="Estimated gross revenue" delta={resultado.ingreso} unidad="USD/acre" />
