@@ -118,7 +118,7 @@ export default function FarmerChoices({ estrategias, fuente, cargando, error, mo
       {/* Selector de prioridad e inputs locales */}
       <div className="rounded-[20px] border border-border-soft bg-white p-4 shadow-sm sm:p-6">
         <h2 className="text-xl font-bold text-forest">What matters most to you?</h2>
-        <p className="mt-1 text-sm text-[#627b69]">Choose your priority, current crop and planting date, then run the 28-rule CosoNASA fuzzy model. Rainfall is estimated from NASA POWER 2015–2024 monthly climatology over each crop cycle; it is not a day-by-day weather forecast.</p>
+        <p className="mt-1 text-sm text-[#627b69]">Choose your priority, current crop and planting date, then run the 28-rule CosoNASA fuzzy model. Rainfall is estimated from NASA POWER 2015–2024 monthly climatology over each crop cycle, not a day-by-day forecast. Crop-cycle lengths are indicative assumptions and should be checked against the local variety and planting calendar.</p>
         <div className="mt-4 grid grid-cols-2 gap-2 sm:grid-cols-4" role="group" aria-label="Farmer priority">
           {METAS.map(({ id, etiqueta, Icono }) => (
             <button
