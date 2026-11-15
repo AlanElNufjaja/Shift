@@ -72,6 +72,19 @@ class BackendTests(unittest.TestCase):
         self.assertEqual(len(body['pilot_fields']), 3)
         self.assertEqual(body['supported_archive_year'], 2024)
 
+    @patch('app.ejecutar_modelo_predictivo_coordenadas', return_value={'status': 'ok'})
+    def test_prediction_route_passes_selected_crop_and_priority(self, mock_engine):
+        with TestClient(app) as client:
+            response = client.post('/api/predict-rotation', json={
+                'lat': 35.5, 'lon': -119.25, 'prioridad': 'erosion',
+                'materia_organica_local': 1.2, 'cultivo_actual': 'Trigo'
+            })
+        self.assertEqual(response.status_code, 200)
+        mock_engine.assert_called_once_with(
+            lat=35.5, lon=-119.25, prioridad='erosion',
+            materia_organica_local=1.2, cultivo_actual='Trigo'
+        )
+
     def test_bad_response_rejected(self):
         with self.assertRaises(ValueError):normalize_power({}, 0, 0, 2024)
 
