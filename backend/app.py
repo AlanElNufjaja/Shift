@@ -60,7 +60,8 @@ class FieldQuery(FieldPoint):
 
 class PredictRequest(FieldPoint):
     prioridad: Optional[str] = "balanced"
-    materia_organica_local: Optional[float] = None
+    materia_organica_local: Optional[float] = Field(default=None, ge=0, le=15)
+    cultivo_actual: Optional[str] = None
 
 
 def clean(value):
@@ -125,7 +126,8 @@ def predict_rotation(req: PredictRequest):
             lat=req.lat,
             lon=req.lon,
             prioridad=req.prioridad or "balanced",
-            materia_organica_local=req.materia_organica_local
+            materia_organica_local=req.materia_organica_local,
+            cultivo_actual=req.cultivo_actual
         )
     except Exception as exc:
         LOG.exception("CosoNASA predictive engine failed")
