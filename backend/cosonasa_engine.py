@@ -43,10 +43,21 @@ MESES_NOMBRES = ["Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", "Julio",
 # 1. SISTEMA DIFUSO COSONASA (25 REGLAS - COBERTURA 81/81 CASOS)
 # =====================================================================
 def trapmf(x, a, b, c, d):
-    return np.maximum(0.0, np.minimum(np.minimum((x - a) / (b - a + 1e-9), 1.0), (d - x) / (d - c + 1e-9)))
+    """Trapezoidal membership with correct left/right shoulder handling."""
+    if not a <= b <= c <= d:
+        raise ValueError("Expected a <= b <= c <= d")
+    values = np.asarray(x, dtype=float)
+    rising = np.ones_like(values) if a == b else np.clip((values - a) / (b - a), 0.0, 1.0)
+    falling = np.ones_like(values) if c == d else np.clip((d - values) / (d - c), 0.0, 1.0)
+    result = np.minimum(rising, falling)
+    return np.where((values < a) | (values > d), 0.0, result)
 
 def trimf(x, a, b, c):
-    return np.maximum(0.0, np.minimum((x - a) / (b - a + 1e-9), (c - x) / (c - b + 1e-9)))
+    """Triangular membership; all breakpoints must be strictly ordered."""
+    if not a < b < c:
+        raise ValueError("Expected a < b < c")
+    values = np.asarray(x, dtype=float)
+    return np.maximum(0.0, np.minimum((values - a) / (b - a), (c - values) / (c - b)))
 
 def evaluar_cosonasa_25(disp_hidrica: float, estres_termico: float, salud_suelo: float, hist_monocultivo: float) -> float:
     disp_hidrica = float(np.clip(disp_hidrica, 0.0, 1.0))
@@ -108,7 +119,13 @@ def obtener_nombre_lugar(lat: float, lon: float):
     except Exception:
         return {"nombre_corto": f"Field ({round(lat,2)}, {round(lon,2)})", "ubicacion_completa": f"{lat}, {lon}", "condado": "N/A", "estado": "N/A", "pais": "N/A"}
 
-def obtener_suelo_usda(lat: float, lon: float, respaldo: dict):
+def obtener_suelo_usda(lat: float, lon: float, respaldo: Optional[dict] = None):
+    """Return SSURGO observations, or an explicitly labelled pilot baseline.
+
+    Custom coordinates never inherit a soil profile from an unrelated pilot.
+    Missing SSURGO attributes remain None instead of being silently imputed.
+    """
+    respaldo = respaldo or {}
     wkt_box = f"POLYGON(({lon-0.01} {lat-0.01}, {lon+0.01} {lat-0.01}, {lon+0.01} {lat+0.01}, {lon-0.01} {lat+0.01}, {lon-0.01} {lat-0.01}))"
     query = f"""
     SELECT TOP 1 m.mukey, m.muname, c.om_r, c.awc_r, c.kffact
@@ -118,21 +135,44 @@ def obtener_suelo_usda(lat: float, lon: float, respaldo: dict):
     WHERE p.mupolygongeo.STIntersects(geometry::STGeomFromText('{wkt_box}', 4326)) = 1
     """
     try:
-        resp = requests.post("https://sdmdataaccess.sc.egov.usda.gov/Tabular/post.rest", json={"query": query, "format": "JSON"}, timeout=8).json()
-        if "Table" in resp and len(resp["Table"]) > 0:
-            f = resp["Table"][0]
+        response = requests.post(
+            "https://sdmdataaccess.sc.egov.usda.gov/Tabular/post.rest",
+            json={"query": query, "format": "JSON"}, timeout=8
+        )
+        response.raise_for_status()
+        payload = response.json()
+        if payload.get("Table"):
+            row = payload["Table"][0]
+            def numeric(value):
+                try:
+                    number = float(value)
+                    return round(number, 3) if math.isfinite(number) else None
+                except (TypeError, ValueError):
+                    return None
             return {
-                "mukey": str(f[0]),
-                "textura": str(f[1]),
-                "materia_organica_pct": round(float(f[2]), 2) if f[2] else respaldo["materia_organica_pct"],
-                "retencion_agua_awc": round(float(f[3]), 2) if f[3] else respaldo["retencion_agua_awc"],
-                "factor_erosion_k": round(float(f[4]), 2) if f[4] else respaldo["factor_erosion_k"],
-                "fuente": "USDA NRCS SSURGO Live",
-                "cobertura_verificada": True
+                "mukey": str(row[0]) if row[0] is not None else None,
+                "textura": str(row[1]) if row[1] is not None else "Not reported",
+                "materia_organica_pct": numeric(row[2]),
+                "retencion_agua_awc": numeric(row[3]),
+                "factor_erosion_k": numeric(row[4]),
+                "fuente": "USDA NRCS SSURGO",
+                "cobertura_verificada": all(numeric(v) is not None for v in row[2:5])
             }
-    except Exception:
+    except (requests.RequestException, ValueError, TypeError, KeyError, IndexError):
         pass
-    return {**respaldo, "fuente": "Regional Soil Baseline", "cobertura_verificada": False}
+
+    has_baseline = any(respaldo.get(key) is not None for key in (
+        "materia_organica_pct", "retencion_agua_awc", "factor_erosion_k"
+    ))
+    return {
+        "mukey": respaldo.get("mukey"),
+        "textura": respaldo.get("textura", "Unavailable"),
+        "materia_organica_pct": respaldo.get("materia_organica_pct"),
+        "retencion_agua_awc": respaldo.get("retencion_agua_awc"),
+        "factor_erosion_k": respaldo.get("factor_erosion_k"),
+        "fuente": "Pilot reference baseline (not an in-field measurement)" if has_baseline else "USDA SSURGO unavailable",
+        "cobertura_verificada": False
+    }
 
 def obtener_agua_subterranea_usgs(lat: float, lon: float):
     b_box = f"{round(lon-0.15, 4)},{round(lat-0.15, 4)},{round(lon+0.15, 4)},{round(lat+0.15, 4)}"
@@ -226,121 +266,174 @@ def ejecutar_modelo_predictivo_coordenadas(
     cultivo_actual: Optional[str] = None
 ):
     lugar = obtener_nombre_lugar(lat, lon)
-    
-    # Buscar si cae cerca de algun piloto o usar coordenadas libres
+
+    # Only the three documented pilot areas have a crop-history archive.
     pid = "custom-coord"
-    info_base = PARCELAS_PILOTO["fresno-01"]
-    for k, v in PARCELAS_PILOTO.items():
-        if math.hypot(lat - v["lat"], lon - v["lon"]) <= 0.25:
-            pid, info_base = k, v
+    info_base = {
+        "suelo_respaldo": {},
+        "cultivos": {}
+    }
+    for pilot_id, pilot in PARCELAS_PILOTO.items():
+        if math.hypot(lat - pilot["lat"], lon - pilot["lon"]) <= 0.25:
+            pid, info_base = pilot_id, pilot
             break
 
-    suelo = obtener_suelo_usda(lat, lon, info_base["suelo_respaldo"])
+    suelo = obtener_suelo_usda(lat, lon, info_base.get("suelo_respaldo", {}))
     if materia_organica_local is not None:
-        suelo["materia_organica_pct"] = round(materia_organica_local, 2)
-        suelo["fuente"] = "Farmer Local Lab + USDA SSURGO"
-        suelo["cobertura_verificada"] = True
+        suelo["materia_organica_pct"] = round(float(materia_organica_local), 2)
+        soil_source = suelo.get("fuente", "USDA SSURGO")
+        suelo["fuente"] = f"{soil_source} + user-supplied local organic matter"
+        suelo["materia_organica_es_local"] = True
 
     agua_usgs = obtener_agua_subterranea_usgs(lat, lon)
 
-    # Petición segura a NASA POWER con las coordenadas exactas elegidas
+    # NASA POWER observations are kept missing when absent or flagged as -999.
     url_nasa = (
-        f"https://power.larc.nasa.gov/api/temporal/monthly/point"
-        f"?parameters=T2M_MAX,T2M_MIN,PRECTOTCORR,GWETTOP"
+        "https://power.larc.nasa.gov/api/temporal/monthly/point"
+        "?parameters=T2M_MAX,T2M_MIN,PRECTOTCORR,GWETTOP"
         f"&community=AG&longitude={lon}&latitude={lat}"
-        f"&start=2015&end=2024&format=JSON"
+        "&start=2015&end=2024&format=JSON"
     )
-    res_nasa = {}
     try:
-        resp_nasa = requests.get(url_nasa, timeout=12).json()
-        res_nasa = resp_nasa.get("properties", {}).get("parameter", {})
-    except Exception:
+        response = requests.get(url_nasa, timeout=12)
+        response.raise_for_status()
+        res_nasa = response.json().get("properties", {}).get("parameter", {})
+    except (requests.RequestException, ValueError, TypeError, AttributeError):
         res_nasa = {}
 
-    hist_cultivos = info_base["cultivos"]
-    cultivo_reciente = cultivo_actual if (cultivo_actual and cultivo_actual in CATALOGO_CULTIVOS) else "Maíz"
+    def observation(parameter, key):
+        try:
+            value = float(res_nasa.get(parameter, {}).get(key))
+            return round(value, 3) if math.isfinite(value) and value > -990 else None
+        except (TypeError, ValueError):
+            return None
 
+    cultivo_reciente = cultivo_actual if cultivo_actual in CATALOGO_CULTIVOS else "Maíz"
     historial_unificado = []
     for anio in range(2015, 2025):
-        anio_str = str(anio)
-        if pid != "custom-coord":
-            cultivo_anio = hist_cultivos.get(anio_str, "Trigo")
-        else:
-            cultivo_anio = cultivo_reciente if anio == 2024 else ("Trigo" if anio % 2 == 0 else "Tomate")
-
-        info_merc = CATALOGO_CULTIVOS.get(cultivo_anio, CATALOGO_CULTIVOS["Maíz"])
-
+        cultivo_anio = info_base.get("cultivos", {}).get(str(anio))
+        info_merc = CATALOGO_CULTIVOS.get(cultivo_anio, {}) if cultivo_anio else {}
         for m_num, nombre_mes in zip(MESES_KEYS, MESES_NOMBRES):
             clave = f"{anio}{m_num}"
-            t_max = res_nasa.get("T2M_MAX", {}).get(clave, 28.0)
-            t_min = res_nasa.get("T2M_MIN", {}).get(clave, 12.0)
-            lluvia = res_nasa.get("PRECTOTCORR", {}).get(clave, 2.5)
-            humedad = res_nasa.get("GWETTOP", {}).get(clave, 0.35)
-
+            t_max = observation("T2M_MAX", clave)
+            t_min = observation("T2M_MIN", clave)
+            lluvia = observation("PRECTOTCORR", clave)
+            humedad = observation("GWETTOP", clave)
             historial_unificado.append({
                 "anio": anio,
                 "mes": nombre_mes,
                 "fecha": f"{anio}-{m_num}",
-                "temp_max_c": round(float(t_max), 1) if t_max != -999 else 28.0,
-                "lluvia_mm": round(float(lluvia) * 30, 1) if lluvia != -999 else 25.0,
-                "riesgo_helada": bool(t_min <= 2.5) if t_min != -999 else False,
-                "humedad_suelo_pct": round(float(humedad) * 100, 1) if humedad != -999 else 35.0,
+                "temp_max_c": t_max,
+                "temp_min_c": t_min,
+                "lluvia_mm_dia": lluvia,
+                "riesgo_helada": (t_min <= 2.5) if t_min is not None else None,
+                "humedad_suelo_pct": round(humedad * 100, 1) if humedad is not None else None,
                 "cultivo_principal": cultivo_anio,
-                "codigo_cdl": info_merc["codigo_cdl"],
-                "precio_usd_ton": info_merc["precio_usd_ton"]
+                "codigo_cdl": info_merc.get("codigo_cdl"),
+                "precio_usd_ton": info_merc.get("precio_usd_ton")
             })
 
-    ultimos_12 = historial_unificado[-12:]
-    hum_media_24 = float(np.mean([m["humedad_suelo_pct"] for m in ultimos_12]))
-    temp_pico_24 = float(np.max([m["temp_max_c"] for m in ultimos_12]))
+    # Score only when the required climate and soil inputs are actually present.
+    clima_2024 = [row for row in historial_unificado if row["anio"] == 2024]
+    humedad_valid = [row["humedad_suelo_pct"] for row in clima_2024 if row["humedad_suelo_pct"] is not None]
+    temp_valid = [row["temp_max_c"] for row in clima_2024 if row["temp_max_c"] is not None]
+    missing_data = []
+    if len(humedad_valid) < 9:
+        missing_data.append("NASA POWER GWETTOP: at least 9 valid monthly observations in 2024 are required.")
+    if len(temp_valid) < 9:
+        missing_data.append("NASA POWER T2M_MAX: at least 9 valid monthly observations in 2024 are required.")
+    for key, label in (
+        ("materia_organica_pct", "Soil organic matter (SSURGO or local lab)"),
+        ("retencion_agua_awc", "Available water capacity (SSURGO)"),
+        ("factor_erosion_k", "Soil erodibility K factor (SSURGO)")
+    ):
+        if suelo.get(key) is None:
+            missing_data.append(f"{label} is unavailable.")
+
+    data_quality = {
+        "pilot_id": None if pid == "custom-coord" else pid,
+        "climate_valid_months_2024": {
+            "temperature_max": len(temp_valid),
+            "topsoil_moisture": len(humedad_valid)
+        },
+        "soil_source": suelo.get("fuente"),
+        "soil_is_field_verified": bool(suelo.get("cobertura_verificada")),
+        "crop_history_status": "pilot archive" if pid != "custom-coord" else "unavailable for custom coordinates",
+        "crop_history_is_observed": pid != "custom-coord"
+    }
+    if missing_data:
+        return {
+            "status": "insufficient-data",
+            "model_version": "CosoNASA-Mamdani-25Rules",
+            "coordinates": {"lat": lat, "lon": lon},
+            "location": lugar,
+            "soil_properties": suelo,
+            "local_groundwater_usgs": agua_usgs,
+            "data_quality": data_quality,
+            "missing_data": missing_data,
+            "rotation_strategies": [],
+            "crop_ranking": [],
+            "historical_series_10y": historial_unificado,
+            "message": "No recommendation was generated because required observations are missing. No substitute climate or soil values were invented."
+        }
+
+    hum_media_2024 = float(np.mean(humedad_valid))
+    temp_pico_2024 = float(np.max(temp_valid))
     om_pct = float(suelo["materia_organica_pct"])
     awc = float(suelo["retencion_agua_awc"])
     erosion_k = float(suelo["factor_erosion_k"])
 
-    # Normalización dinámica adaptada al punto real
-    agua_n  = float(np.clip((hum_media_24 / 75.0) * 0.75 + (awc / 0.20) * 0.25, 0.15, 0.95))
-    calor_n = float(np.clip((temp_pico_24 - 15.0) / (45.0 - 15.0), 0.10, 0.90))
-    suelo_n = float(np.clip((om_pct / 2.0) * 0.7 + ((0.45 - erosion_k) / 0.30) * 0.3, 0.20, 0.90))
-    mono_n  = 1.5 if pid == "custom-coord" else (3.5 if pid in ["fresno-01", "bakersfield-02"] else 2.0)
+    agua_n = float(np.clip((hum_media_2024 / 75.0) * 0.75 + (awc / 0.20) * 0.25, 0.0, 1.0))
+    calor_n = float(np.clip((temp_pico_2024 - 15.0) / 30.0, 0.0, 1.0))
+    suelo_n = float(np.clip((om_pct / 2.0) * 0.7 + ((0.45 - erosion_k) / 0.30) * 0.3, 0.0, 1.0))
+
+    if pid == "custom-coord":
+        # A neutral prior is explicitly disclosed; no synthetic crop history is returned.
+        mono_n = 2.0
+        monoculture_assumption = "Neutral prior (2/4); actual crop history unavailable."
+    else:
+        crop_history = info_base.get("cultivos", {})
+        last_crop = crop_history.get("2024")
+        consecutive_years = 0
+        for year in range(2024, 2014, -1):
+            if crop_history.get(str(year)) == last_crop:
+                consecutive_years += 1
+            else:
+                break
+        mono_n = float(min(consecutive_years, 4))
+        monoculture_assumption = "Derived from the documented pilot crop-history archive."
 
     score_fis_actual = evaluar_cosonasa_25(agua_n, calor_n, suelo_n, mono_n)
-    estrategias, ranking_cultivos = simular_estrategias_predictivas(cultivo_reciente, agua_n, calor_n, suelo_n, mono_n, prioridad)
-
-    if suelo["cobertura_verificada"] and agua_usgs["disponible"]:
-        confiabilidad_sitio = 96.48
-        nivel_confianza = "High (NASA Climate + USDA SSURGO + USGS Groundwater)"
-    elif suelo["cobertura_verificada"] or materia_organica_local is not None:
-        confiabilidad_sitio = 91.20
-        nivel_confianza = "Good (NASA Satellite Climate + Verified Soil Data)"
-    else:
-        confiabilidad_sitio = 87.50
-        nivel_confianza = "Moderate (NASA Satellite Climate Baseline)"
+    estrategias, ranking_cultivos = simular_estrategias_predictivas(
+        cultivo_reciente, agua_n, calor_n, suelo_n, mono_n, prioridad
+    )
 
     return {
-        "model_version": "Neuro-Symbolic CosoNASA-25Rules + RandomForest Surrogate",
+        "status": "ok",
+        "model_version": "CosoNASA-Mamdani-25Rules",
         "coordinates": {"lat": lat, "lon": lon},
         "location": lugar,
         "soil_properties": suelo,
         "local_groundwater_usgs": agua_usgs,
+        "data_quality": {
+            **data_quality,
+            "monoculture_input": monoculture_assumption,
+            "recommendations_are_exploratory": True
+        },
         "model_reliability": {
-            "architecture": "FIS Mamdani CosoNASA (25 Rules, 81/81 coverage) + Random Forest Regressor",
-            "benchmark_precision_pct": 96.48,
-            "mape_error_pct": 3.52,
-            "mae_points": 1.84,
-            "r2_score_test": 0.985,
-            "site_confidence_pct": confiabilidad_sitio,
-            "confidence_level": nivel_confianza,
-            "margin_of_error_pts": round(100.0 - confiabilidad_sitio, 2) if confiabilidad_sitio < 90 else 1.84
+            "architecture": "Mamdani fuzzy inference system; 25 authored rules.",
+            "validation_status": "Not independently validated. No benchmark accuracy, R2, MAPE or error margin is claimed.",
+            "rule_count": 25
         },
         "fuzzy_evaluation": {
             "inputs": {
-                "Disponibilidad_Hidrica": round(agua_n, 2),
-                "Estres_Termico": round(calor_n, 2),
-                "Salud_suelo": round(suelo_n, 2),
+                "Disponibilidad_Hidrica": round(agua_n, 3),
+                "Estres_Termico": round(calor_n, 3),
+                "Salud_suelo": round(suelo_n, 3),
                 "Historial_Monocultivo": mono_n
             },
-            "suitability_score": max(48.0, score_fis_actual),
-            "category": "Optimal" if score_fis_actual >= 60 else ("Acceptable" if score_fis_actual >= 40 else "Acceptable Baseline")
+            "suitability_score": score_fis_actual,
+            "category": "Optimal" if score_fis_actual >= 60 else ("Acceptable" if score_fis_actual >= 40 else "Low suitability")
         },
         "rotation_strategies": estrategias,
         "crop_ranking": ranking_cultivos,
