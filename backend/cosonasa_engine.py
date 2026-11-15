@@ -335,9 +335,14 @@ def simular_estrategias_predictivas(cultivo_actual: str, agua_n: float, calor_n:
         })
     ranking.sort(key=lambda x: x["score_proyectado"], reverse=True)
 
-    score_base = evaluar_cosonasa_28(agua_n, calor_n, suelo_n, min(4.0, mono_n + 1.0))
-    score_agua = evaluar_cosonasa_28(min(agua_n * 1.35, 1.0), calor_n * 0.9, min(suelo_n * 1.30, 1.0), 0.5)
-    score_econ = evaluar_cosonasa_28(min(agua_n * 1.15, 1.0), calor_n, min(suelo_n * 1.15, 1.0), 0.5)
+    crop_base = cultivo_actual if cultivo_actual in CATALOGO_CULTIVOS else "Maíz"
+    factor_base = lluvia_por_cultivo.get(crop_base, {}).get("factor_estacional", 1.0)
+    score_base = evaluar_cosonasa_28(float(np.clip(agua_n * factor_base, 0.0, 1.0)), calor_n, suelo_n, min(4.0, mono_n + 1.0))
+    crop_water = ranking[0]["cultivo"] if ranking else "Cártamo"
+    factor_water = lluvia_por_cultivo.get(crop_water, {}).get("factor_estacional", 1.0)
+    score_agua = evaluar_cosonasa_28(float(np.clip(agua_n * 1.35 * factor_water, 0.0, 1.0)), calor_n * 0.9, min(suelo_n * 1.30, 1.0), 0.5)
+    factor_wheat = lluvia_por_cultivo.get("Trigo", {}).get("factor_estacional", 1.0)
+    score_econ = evaluar_cosonasa_28(float(np.clip(agua_n * 1.15 * factor_wheat, 0.0, 1.0)), calor_n, min(suelo_n * 1.15, 1.0), 0.5)
 
     estrategias = [
         {
