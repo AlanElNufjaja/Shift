@@ -5,7 +5,7 @@ import unittest
 from unittest.mock import patch
 from fastapi.testclient import TestClient
 from pydantic import ValidationError
-from app import app, FieldQuery, normalize_power, clean
+from app import app, FieldQuery, PredictRequest, normalize_power, clean
 
 class BackendTests(unittest.TestCase):
     def test_valid_coordinates_worldwide(self):
@@ -15,6 +15,15 @@ class BackendTests(unittest.TestCase):
     def test_invalid_coordinates(self):
         for lat, lon in [(91, 0), (-91, 0), (0, 181), (0, -181), (float('nan'), 0), (float('inf'), 0)]:
             with self.assertRaises(ValidationError): FieldQuery(lat=lat, lon=lon)
+
+    def test_prediction_request_validates_crop_and_priority(self):
+        request = PredictRequest(lat=35.5, lon=-119.25, cultivo_actual="Trigo", prioridad="erosion")
+        self.assertEqual(request.cultivo_actual, "Trigo")
+        self.assertEqual(request.prioridad, "erosion")
+        with self.assertRaises(ValidationError):
+            PredictRequest(lat=35.5, lon=-119.25, cultivo_actual="Invented crop")
+        with self.assertRaises(ValidationError):
+            PredictRequest(lat=35.5, lon=-119.25, prioridad="magic")
 
     def test_nulls_not_invented(self):
         self.assertIsNone(clean(-999))
