@@ -62,6 +62,7 @@ class PredictRequest(FieldPoint):
     prioridad: Optional[str] = "balanced"
     materia_organica_local: Optional[float] = Field(default=None, ge=0, le=15)
     cultivo_actual: Optional[str] = None
+    fecha_siembra: Optional[str] = None
 
     @field_validator("prioridad")
     @classmethod
@@ -144,7 +145,8 @@ def predict_rotation(req: PredictRequest):
             lon=req.lon,
             prioridad=req.prioridad or "balanced",
             materia_organica_local=req.materia_organica_local,
-            cultivo_actual=req.cultivo_actual
+            cultivo_actual=req.cultivo_actual,
+            fecha_siembra=req.fecha_siembra
         )
     except Exception as exc:
         LOG.exception("CosoNASA predictive engine failed")
