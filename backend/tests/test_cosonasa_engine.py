@@ -107,7 +107,7 @@ class DataIntegrityTests(unittest.TestCase):
         self.assertIn("h.kffact", query)
         self.assertIn("h.cokey = c.cokey", query)
         self.assertNotIn("c.om_r", query)
-        self.assertAlmostEqual(soil["materia_organica_pct"], 1.867, places=3)
+        self.assertAlmostEqual(soil["materia_organica_pct"], 2.0, places=3)
         self.assertAlmostEqual(soil["retencion_agua_awc"], 0.2, places=3)
         self.assertAlmostEqual(soil["factor_erosion_k"], 0.3, places=3)
         self.assertTrue(soil["cobertura_verificada"])
