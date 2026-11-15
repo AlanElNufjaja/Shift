@@ -9,6 +9,12 @@ import { useTeamPilotArchive } from '../../hooks/useTeamPilotArchive.js';
 import TeamModelEvidence from '../global/TeamModelEvidence.jsx';
 import ExportAssessment from '../report/ExportAssessment.jsx';
 
+function fechaLocalISO() {
+  const now = new Date();
+  const offset = now.getTimezoneOffset() * 60000;
+  return new Date(now.getTime() - offset).toISOString().slice(0, 10);
+}
+
 const METAS = [
   { id: 'agua', etiqueta: 'Save water', Icono: Droplets },
   { id: 'suelo', etiqueta: 'Protect soil health', Icono: Sprout },
@@ -43,7 +49,7 @@ export default function FarmerChoices({ estrategias, fuente, cargando, error, mo
   const [copiado, setCopiado] = useState('');
   const [cultivoActual, setCultivoActual] = useState('Maíz');
   const [materiaOrganicaLocal, setMateriaOrganicaLocal] = useState('');
-  const [fechaSiembra, setFechaSiembra] = useState(new Date().toISOString().slice(0, 10));
+  const [fechaSiembra, setFechaSiembra] = useState(fechaLocalISO());
   const [prediccionCosoNasa, setPrediccionCosoNasa] = useState(null);
   const [ejecutandoMotor, setEjecutandoMotor] = useState(false);
   const [errorMotor, setErrorMotor] = useState('');
@@ -112,7 +118,7 @@ export default function FarmerChoices({ estrategias, fuente, cargando, error, mo
       {/* Selector de prioridad e inputs locales */}
       <div className="rounded-[20px] border border-border-soft bg-white p-4 shadow-sm sm:p-6">
         <h2 className="text-xl font-bold text-forest">What matters most to you?</h2>
-        <p className="mt-1 text-sm text-[#627b69]">Choose your priority and current crop, then run the 28-rule CosoNASA fuzzy model. Recommendations are exploratory, not scientifically validated.</p>
+        <p className="mt-1 text-sm text-[#627b69]">Choose your priority, current crop and planting date, then run the 28-rule CosoNASA fuzzy model. Rainfall is estimated from NASA POWER 2015–2024 monthly climatology over each crop cycle; it is not a day-by-day weather forecast.</p>
         <div className="mt-4 grid grid-cols-2 gap-2 sm:grid-cols-4" role="group" aria-label="Farmer priority">
           {METAS.map(({ id, etiqueta, Icono }) => (
             <button
@@ -261,6 +267,12 @@ export default function FarmerChoices({ estrategias, fuente, cargando, error, mo
                 <p className="mt-1 text-xs font-bold text-[#37734d]">
                   Sequence: {est.sequence.join(' → ')} · Water demand: {est.water_demand}
                 </p>
+                {est.sequence[0] && prediccionCosoNasa.rainfall_by_crop_cycle?.[est.sequence[0]] && (
+                  <p className="mt-1 text-xs text-[#52765a]">
+                    Estimated rainfall during {est.sequence[0]} cycle: {prediccionCosoNasa.rainfall_by_crop_cycle[est.sequence[0]].lluvia_ciclo_mm ?? 'N/A'} mm
+                    ({prediccionCosoNasa.rainfall_by_crop_cycle[est.sequence[0]].ciclo_dias} days)
+                  </p>
+                )}
                 <p className="mt-2 text-sm text-[#516d59]">{est.rationale}</p>
                 <p className="mt-1 text-xs text-[#865e2a]"><strong>Local review needed:</strong> {est.risks}</p>
               </div>
