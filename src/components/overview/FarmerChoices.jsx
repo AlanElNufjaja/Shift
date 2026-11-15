@@ -269,14 +269,19 @@ export default function FarmerChoices({ estrategias, fuente, cargando, error, mo
                   </span>
                 </div>
                 <p className="mt-1 text-xs font-bold text-[#37734d]">
-                  Sequence: {est.sequence.join(' → ')} · Water demand: {est.water_demand}
+                  Sequence: {est.sequence.join(' → ')} · Crop water-demand profile: {(est.water_demand_profile || (est.rainfall_schedule || []).map(cycle => cycle.demanda_agua)).join(' → ')}
                 </p>
                 <div className="mt-3 rounded-lg border border-[#e3ece0] bg-white/80 p-3">
                   <div className="flex flex-wrap items-center justify-between gap-2">
                     <p className="text-[10px] font-extrabold uppercase tracking-wider text-[#63816a]">Expected rainfall across this rotation</p>
-                    <strong className="text-sm text-[#285b3d]">
-                      {est.rainfall_total_mm == null ? 'Incomplete data' : `${formatoNumero(est.rainfall_total_mm, 1)} mm total`}
-                    </strong>
+                    <div className="text-right">
+                      <strong className="block text-sm text-[#285b3d]">
+                        {est.rainfall_total_mm == null ? 'Incomplete data' : `${formatoNumero(est.rainfall_total_mm, 1)} mm total`}
+                      </strong>
+                      <span className="text-[10px] text-[#63816a]">
+                        {est.rainfall_mm_per_30_days == null ? '' : `${formatoNumero(est.rainfall_mm_per_30_days, 1)} mm / 30 days`}
+                      </span>
+                    </div>
                   </div>
                   <div className="mt-2 space-y-2">
                     {(est.rainfall_schedule || []).map((cycle, cycleIndex) => (
@@ -294,7 +299,7 @@ export default function FarmerChoices({ estrategias, fuente, cargando, error, mo
                   </div>
                   <p className="mt-2 text-[10px] leading-relaxed text-[#8a7960]">
                     {est.rainfall_schedule_complete
-                      ? `Sum of expected precipitation over ${est.rotation_duration_days} consecutive crop-cycle days; it is not effective rainfall or irrigation supply.`
+                      ? `Total expected precipitation over ${est.rotation_duration_days} consecutive days. The 30-day figure normalizes different rotation lengths for comparison; neither value represents crop water demand, effective rainfall or irrigation supply.`
                       : 'The rainfall total is unavailable because one or more months in this rotation lack climate data.'}
                   </p>
                 </div>
