@@ -162,7 +162,7 @@ def obtener_suelo_usda(lat: float, lon: float, respaldo: Optional[dict] = None):
     try:
         response = requests.post(
             "https://sdmdataaccess.sc.egov.usda.gov/Tabular/post.rest",
-            json={"query": query, "format": "JSON"}, timeout=12
+            data={"query": query, "format": "JSON"}, timeout=12
         )
         response.raise_for_status()
         payload = response.json()
