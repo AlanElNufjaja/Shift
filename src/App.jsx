@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { ExternalLink, Leaf, Satellite } from 'lucide-react';
+import { ExternalLink, Github, Leaf, Satellite } from 'lucide-react';
 import AppShell from './components/layout/AppShell.jsx';
 import JourneyHeader, { JourneyFooter } from './components/layout/JourneyHeader.jsx';
 import FarmerLand from './components/overview/FarmerLand.jsx';
@@ -165,14 +165,24 @@ function AppContent({ parcela, prioridad }) {
           <span className="font-normal text-[#879a8a]">· NASA Space Apps 2026</span>
         </span>
         <span>Built to support farmers alongside local agricultural experience</span>
-        <a
-          className="focus-ring inline-flex items-center gap-1 font-bold text-agri hover:underline"
-          href="https://power.larc.nasa.gov/"
-          target="_blank"
-          rel="noreferrer"
-        >
-          <Satellite size={15} /> NASA POWER <ExternalLink size={13} />
-        </a>
+        <div className="flex flex-wrap items-center gap-4">
+          <a
+            className="focus-ring inline-flex items-center gap-1 font-bold text-agri hover:underline"
+            href="https://github.com/AlanElNufjaja/Shift"
+            target="_blank"
+            rel="noreferrer"
+          >
+            <Github size={15} /> GitHub <ExternalLink size={13} />
+          </a>
+          <a
+            className="focus-ring inline-flex items-center gap-1 font-bold text-agri hover:underline"
+            href="https://power.larc.nasa.gov/"
+            target="_blank"
+            rel="noreferrer"
+          >
+            <Satellite size={15} /> NASA POWER <ExternalLink size={13} />
+          </a>
+        </div>
       </footer>
     </AppShell>
   );
