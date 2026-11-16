@@ -168,7 +168,7 @@ function AppContent({ parcela, prioridad }) {
         <div className="flex flex-wrap items-center gap-4">
           <a
             className="focus-ring inline-flex items-center gap-1 font-bold text-agri hover:underline"
-            href="https://github.com/AlanElNufjaja/Shift"
+            href="https://github.com/AlanElNufjaja/Shift/tree/fix/cosonasa-audit"
             target="_blank"
             rel="noreferrer"
           >
