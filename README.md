@@ -355,3 +355,11 @@ P2: connect the existing `/recomendar` endpoint through the configured Vite envi
 ## Environment notes
 
 Use `.env.example` as a reference for optional API/proxy configuration. Do not commit secrets. This project does not require any map API key.
+
+
+---
+
+## Live demo and source code
+
+- **Live web app:** [Field Shift — NASA Space Apps 2026](https://field-shift-judge-demo.onrender.com/#etapa-3)
+- **GitHub repository:** [AlanElNufjaja/Shift](https://github.com/AlanElNufjaja/Shift)

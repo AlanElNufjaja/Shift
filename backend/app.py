@@ -60,7 +60,25 @@ class FieldQuery(FieldPoint):
 
 class PredictRequest(FieldPoint):
     prioridad: Optional[str] = "balanced"
-    materia_organica_local: Optional[float] = None
+    materia_organica_local: Optional[float] = Field(default=None, ge=0, le=15)
+    cultivo_actual: Optional[str] = None
+    fecha_siembra: Optional[str] = None
+
+    @field_validator("prioridad")
+    @classmethod
+    def valid_priority(cls, value: Optional[str]) -> Optional[str]:
+        allowed = {"balanced", "water", "profit", "soil", "erosion"}
+        if value is not None and value not in allowed:
+            raise ValueError(f"Priority must be one of: {', '.join(sorted(allowed))}")
+        return value
+
+    @field_validator("cultivo_actual")
+    @classmethod
+    def valid_crop(cls, value: Optional[str]) -> Optional[str]:
+        allowed = {"Tomate", "Algodón", "Trigo", "Cártamo", "Alfalfa", "Maíz", "Nuez", "Manzana", "Descanso"}
+        if value is not None and value not in allowed:
+            raise ValueError("Unknown current crop.")
+        return value
 
 
 def clean(value):
@@ -107,9 +125,10 @@ def health():
 @app.get('/api/models/capabilities')
 def model_capabilities():
     return {
-        "status": "executable",
+        "status": "executable-unvalidated",
         "model_execution_available": True,
-        "engine_version": "CosoNASA-Mamdani-v1.0",
+        "model_validation_status": "not-independently-validated",
+        "engine_version": "CosoNASA-Mamdani-28Rules",
         "supported_archive_year": 2024,
         "pilot_fields": ["fresno-01", "bakersfield-02", "davis-03"],
         "model_run_contract": "field-shift.model-run.v1",
@@ -125,7 +144,9 @@ def predict_rotation(req: PredictRequest):
             lat=req.lat,
             lon=req.lon,
             prioridad=req.prioridad or "balanced",
-            materia_organica_local=req.materia_organica_local
+            materia_organica_local=req.materia_organica_local,
+            cultivo_actual=req.cultivo_actual,
+            fecha_siembra=req.fecha_siembra
         )
     except Exception as exc:
         LOG.exception("CosoNASA predictive engine failed")

@@ -5,7 +5,7 @@ import unittest
 from unittest.mock import patch
 from fastapi.testclient import TestClient
 from pydantic import ValidationError
-from app import app, FieldQuery, normalize_power, clean
+from app import app, FieldQuery, PredictRequest, normalize_power, clean
 
 class BackendTests(unittest.TestCase):
     def test_valid_coordinates_worldwide(self):
@@ -15,6 +15,15 @@ class BackendTests(unittest.TestCase):
     def test_invalid_coordinates(self):
         for lat, lon in [(91, 0), (-91, 0), (0, 181), (0, -181), (float('nan'), 0), (float('inf'), 0)]:
             with self.assertRaises(ValidationError): FieldQuery(lat=lat, lon=lon)
+
+    def test_prediction_request_validates_crop_and_priority(self):
+        request = PredictRequest(lat=35.5, lon=-119.25, cultivo_actual="Trigo", prioridad="erosion")
+        self.assertEqual(request.cultivo_actual, "Trigo")
+        self.assertEqual(request.prioridad, "erosion")
+        with self.assertRaises(ValidationError):
+            PredictRequest(lat=35.5, lon=-119.25, cultivo_actual="Invented crop")
+        with self.assertRaises(ValidationError):
+            PredictRequest(lat=35.5, lon=-119.25, prioridad="magic")
 
     def test_nulls_not_invented(self):
         self.assertIsNone(clean(-999))
@@ -56,11 +65,27 @@ class BackendTests(unittest.TestCase):
             response = client.get('/api/models/capabilities')
         self.assertEqual(response.status_code, 200)
         body = response.json()
-        self.assertEqual(body['status'], 'reference-only')
-        self.assertFalse(body['model_execution_available'])
+        self.assertEqual(body['status'], 'executable-unvalidated')
+        self.assertTrue(body['model_execution_available'])
+        self.assertEqual(body['model_validation_status'], 'not-independently-validated')
         self.assertEqual(body['model_run_contract'], 'field-shift.model-run.v1')
         self.assertEqual(len(body['pilot_fields']), 3)
         self.assertEqual(body['supported_archive_year'], 2024)
+
+    @patch('app.ejecutar_modelo_predictivo_coordenadas', return_value={'status': 'ok'})
+    def test_prediction_route_passes_selected_crop_and_priority(self, mock_engine):
+        with TestClient(app) as client:
+            response = client.post('/api/predict-rotation', json={
+                'lat': 35.5, 'lon': -119.25, 'prioridad': 'erosion',
+                'materia_organica_local': 1.2, 'cultivo_actual': 'Trigo',
+                'fecha_siembra': '2026-11-20'
+            })
+        self.assertEqual(response.status_code, 200)
+        mock_engine.assert_called_once_with(
+            lat=35.5, lon=-119.25, prioridad='erosion',
+            materia_organica_local=1.2, cultivo_actual='Trigo',
+            fecha_siembra='2026-11-20'
+        )
 
     def test_bad_response_rejected(self):
         with self.assertRaises(ValueError):normalize_power({}, 0, 0, 2024)

@@ -121,12 +121,12 @@ export function validateModelRun(payload, teamArchive) {
 }
 
 /** Ejecuta el motor difuso CosoNASA Mamdani en el backend para cualquier coordenada. */
-export async function runCosoNasaPrediction({ lat, lon, priority = 'balanced', localOrganicMatter = null }) {
+export async function runCosoNasaPrediction({ lat, lon, priority = 'balanced', localOrganicMatter = null, currentCrop = null, plantingDate = null }) {
   const priorityMap = {
     agua: 'water',
     rentabilidad: 'profit',
-    suelo: 'balanced',
-    erosion: 'balanced',
+    suelo: 'soil',
+    erosion: 'erosion',
   };
 
   const response = await fetch('/api/predict-rotation', {
@@ -137,6 +137,8 @@ export async function runCosoNasaPrediction({ lat, lon, priority = 'balanced', l
       lon: Number(lon),
       prioridad: priorityMap[priority] || priority,
       materia_organica_local: localOrganicMatter !== null && localOrganicMatter !== '' ? Number(localOrganicMatter) : null,
+      cultivo_actual: currentCrop || null,
+      fecha_siembra: plantingDate || null,
     }),
   });
 

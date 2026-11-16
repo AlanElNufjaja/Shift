@@ -15,9 +15,12 @@ const KNOWN_TERMS = Object.freeze({
   'Franco-arcilloso':'Clay loam', 'Franco-arenoso':'Sandy loam',
   'Franco-limoso':'Silt loam', 'Franco':'Loam',
   'Desnudo':'Bare soil', 'Cubierto':'Covered',
-  'Algodón':'Cotton', 'Tomate de industria':'Processing tomato',
-  'Maíz':'Corn', 'Cártamo':'Safflower', 'Trigo de invierno':'Winter wheat',
+  'Algodón':'Cotton', 'Tomate de industria':'Processing tomato', 'Tomate':'Tomato',
+  'Maíz':'Corn', 'Cártamo':'Safflower', 'Trigo de invierno':'Winter wheat', 'Trigo':'Wheat',
   'Trébol':'Clover', 'Garbanzo':'Chickpea', 'Alfalfa':'Alfalfa',
+  'Nuez':'Walnut', 'Manzana':'Apple', 'Descanso':'Fallow',
+  'Muy Baja':'Very low', 'Muy Bajo':'Very low', 'Baja':'Low', 'Bajo':'Low',
+  'Moderada':'Moderate', 'Moderado':'Moderate', 'Alta':'High', 'Alto':'High', 'Muy Alta':'Very high', 'Muy Alto':'Very high',
   'Monocultivo detectado':'Consecutive repetition detected',
 });
 

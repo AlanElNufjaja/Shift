@@ -39,15 +39,6 @@ export default function FarmerSituation() {
       <LiveSoilPanel compact/>
       <LiveCropPanel/>
       <EvidenceQuickAccess/>
-      <div className="flex flex-wrap items-center justify-between gap-3 rounded-[18px] border border-[#dfebdd] bg-white px-4 py-4 sm:px-5">
-        <div>
-          <p className="text-sm font-bold text-forest">NASA SMAP satellite imagery</p>
-          <p className="mt-1 text-xs text-[#617d68]">View an optional ~9 km satellite layer and request independent numerical SMAP L4 percentiles in Advanced details.</p>
-        </div>
-        <button type="button" onClick={() => irADatos('smap')} className="focus-ring min-h-11 rounded-xl border border-[#c9dfca] px-4 text-sm font-bold text-[#326c47]">
-          View NASA image <ArrowUpRight size={16}/>
-        </button>
-      </div>
     </div>
   );
 
@@ -82,11 +73,6 @@ export default function FarmerSituation() {
     <LiveSoilPanel compact/>
     <LiveCropPanel/>
     <EvidenceQuickAccess/>
-    <div className="flex flex-wrap items-center justify-between gap-3 rounded-[18px] border border-[#dfebdd] bg-white px-4 py-4 sm:px-5">
-      <div className="max-w-[550px]"><p className="flex items-center gap-2 text-sm font-bold text-forest"><Droplets size={17} className="text-agri"/> NASA SMAP satellite imagery</p>
-        <p className="mt-1 text-xs leading-relaxed text-[#617d68]">Optional L3 satellite imagery by date and L4 numerical moisture percentiles (about 9 km). Neither is a field sensor; example charts remain separate.</p></div>
-      <button type="button" onClick={() => irADatos('smap')} className="focus-ring inline-flex min-h-11 items-center gap-1.5 rounded-xl border border-[#c9dfca] px-4 text-sm font-bold text-[#326c47] hover:bg-[#eef7eb]">View NASA image <ArrowUpRight size={16}/></button>
-    </div>
     {power.status === 'success' && <p className="rounded-xl border border-[#d4e6d4] bg-white px-4 py-3 text-sm text-[#4b7058]">NASA POWER {power.year} was queried for this field, but these signals still use example data. Real climate data is not automatically combined with fictional SMAP data.</p>}
     <div className="flex flex-wrap items-center justify-between gap-2 px-1">
       <p className="text-xs text-[#799080]"><Info size={14} className="mr-1 inline" aria-hidden="true"/>Signals based on the demonstration JSON.</p>
