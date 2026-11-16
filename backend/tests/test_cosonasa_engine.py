@@ -121,7 +121,8 @@ class DataIntegrityTests(unittest.TestCase):
                 ]}
         mock_post.return_value = Response()
         soil = engine.obtener_suelo_usda(36.6, -120.1, {})
-        query = mock_post.call_args.kwargs["json"]["query"]
+        query = mock_post.call_args.kwargs["data"]["query"]
+        self.assertNotIn("json", mock_post.call_args.kwargs)
         self.assertIn("h.om_r", query)
         self.assertIn("h.awc_r", query)
         self.assertIn("h.kffact", query)
